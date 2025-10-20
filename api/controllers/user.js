@@ -37,6 +37,7 @@ async function saveUser(req, res){
       email: params.email,
       role: 'ROLE_USER',
       image: null,
+
       password: await bcrypt.hash(params.password, 10)
     });
 
