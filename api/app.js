@@ -11,6 +11,7 @@ var user_routes = require('./routes/user');
 //Middlewares
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
+app.use(express.json());
 
 //Cors
 

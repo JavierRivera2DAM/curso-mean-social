@@ -17,6 +17,10 @@ function pruebas (req, res){
 }
 
 function saveUser(req, res){
+    console.log('req.body:', req.body);
+    if (!req.body) {
+        return res.status(400).send({ message: 'No se han enviado datos en el cuerpo de la solicitud' });
+    }   
     var params = req.body;
     var user = new User();
 
