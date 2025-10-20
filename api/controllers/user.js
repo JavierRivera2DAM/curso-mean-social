@@ -88,5 +88,6 @@ function loginUser (req, res){
 module.exports = {
     home,
     pruebas,
-    saveUser
+    saveUser,
+    loginUser
 }
