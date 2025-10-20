@@ -47,6 +47,7 @@ async function saveUser(req, res){
             role: 'ROLE_USER',
             image: null,
 
+        //Cifrado y Guardado de Contraseña
             password: await bcrypt.hash(params.password, 10)
     });
 
