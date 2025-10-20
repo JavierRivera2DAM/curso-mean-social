@@ -27,6 +27,8 @@ function saveUser(req, res){
             user.surname = params.surname;
             user.nick = params.nick;
             user.email = params.email;
+            user.role = 'ROLE_USER';
+            user.image = null;
 
             bcrypt.hash(params.password, null, null, (err, hash) => {
                 user.password = hash;
