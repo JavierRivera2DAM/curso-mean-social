@@ -56,5 +56,6 @@ function saveUser(req, res){
 
 module.exports = {
     home,
-    pruebas
+    pruebas,
+    saveUser
 }
