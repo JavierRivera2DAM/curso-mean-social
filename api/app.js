@@ -14,3 +14,7 @@ app.use(bodyParser.json());
 //Cors
 
 //Rutas
+
+
+//Exportar
+module.exports = app;
