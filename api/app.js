@@ -15,6 +15,11 @@ app.use(bodyParser.json());
 
 //Rutas
 
+app.get('/pruebas', (req, res) => {
+    res.status(200).send({
+        message: 'Accion de pruebas en el servidor de Node'
+    })
+})
 
 //Exportar
 module.exports = app;
