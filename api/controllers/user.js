@@ -30,15 +30,24 @@ async function saveUser(req, res){
            return res.status(400).send({ message: 'Envia todos los campos necesarios' });           
     }
     try {
-    const user = new User({
-      name: params.name,
-      surname: params.surname,
-      nick: params.nick,
-      email: params.email,
-      role: 'ROLE_USER',
-      image: null,
+        //Se procede a la verificacion de la existencia del usuario
+        const existingUser = await User.findOne({
+            $or: [{ email: params.email }, { nick: params.nick }]
+        });
 
-      password: await bcrypt.hash(params.password, 10)
+        if (existingUser){
+            return res.status(409).send({ message: 'El correo o nick ya existen'})
+        }
+        //Creacion de Nuevo Ususario
+        const user = new User({
+            name: params.name,
+            surname: params.surname,
+            nick: params.nick,
+            email: params.email,
+            role: 'ROLE_USER',
+            image: null,
+
+            password: await bcrypt.hash(params.password, 10)
     });
 
     const userStored = await user.save();
