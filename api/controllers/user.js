@@ -1,5 +1,5 @@
 'use strict'
-var bcrypt = require('bcrypt-nodejs') ;
+var bcrypt = require('bcrypt') ;
 
 var User = require('../models/user');
 
