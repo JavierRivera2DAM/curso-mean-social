@@ -15,6 +15,12 @@ app.use(bodyParser.json());
 
 //Rutas
 
+app.get('/', (req, res) => {
+    res.status(200).send({
+        message: 'Hola Mundo desde el Servidor de NodeJS'
+    })
+})
+
 app.get('/pruebas', (req, res) => {
     res.status(200).send({
         message: 'Accion de pruebas en el servidor de Node'
