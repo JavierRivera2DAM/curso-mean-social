@@ -36,7 +36,7 @@ async function saveUser(req, res){
         });
 
         if (existingUser){
-            return res.status(409).send({ message: 'El correo o nick ya existen'})
+            return res.status(409).send({ message: 'El usuario que intentas registrar ya existe'})
         }
         //Creacion de Nuevo Ususario
         const user = new User({
