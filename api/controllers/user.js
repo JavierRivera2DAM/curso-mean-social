@@ -60,7 +60,7 @@ async function saveUser(req, res){
   }
 }
 
-function loginUser (req, res){
+async   function loginUser (req, res){
     var params = req.body;
 
     var email = params.email;
