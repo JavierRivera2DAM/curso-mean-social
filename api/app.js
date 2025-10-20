@@ -21,7 +21,8 @@ app.get('/', (req, res) => {
     })
 })
 
-app.get('/pruebas', (req, res) => {
+app.post('/pruebas', (req, res) => {
+    console.log(req.body);
     res.status(200).send({
         message: 'Accion de pruebas en el servidor de Node'
     })
