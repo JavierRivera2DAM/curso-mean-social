@@ -1,6 +1,6 @@
 'use strict'
 
-var express = requiere('express');
+var express = require('express');
 var UserController = require('../controllers/user');
 
 var api = express.Router();
