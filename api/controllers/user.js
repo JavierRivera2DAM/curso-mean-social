@@ -16,46 +16,37 @@ function pruebas (req, res){
     });
 }
 
-function saveUser(req, res){
+async function saveUser(req, res){
     console.log('req.body:', req.body);
+    
     if (!req.body) {
         return res.status(400).send({ message: 'No se han enviado datos en el cuerpo de la solicitud' });
     }   
     var params = req.body;
     var user = new User();
 
-    if(params.name && params.surname
-        && params.nick && params.email && params.password){
-           
-            user.name = params.name;
-            user.surname = params.surname;
-            user.nick = params.nick;
-            user.email = params.email;
-            user.role = 'ROLE_USER';
-            user.image = null;
-
-            bcrypt.hash(params.password, null, null, (err, hash) => {
-                user.password = hash;
-
-                user.save((err, userStored) => {
-                    if (err) return res.status(500).send({message: 'Error al guardar el usuario'});
-                    
-                    if(userStored){
-                        res.status(200).send({user: userStored});
-                    }
-                    else{
-                        res.status(404).send({message: 'No se ha registrado el usuario'});
-                    }
-
-                });
-            });
-            
+    if(!params.name || !params.surname ||
+         !params.nick || !params.email || !params.password){
+           return res.status(400).send({ message: 'Envia todos los campos necesarios' });           
     }
-    else{
-        res.status(200).send({
-            message: 'Envia todos los campos necesarios'
-        });
-    }
+    try {
+    const user = new User({
+      name: params.name,
+      surname: params.surname,
+      nick: params.nick,
+      email: params.email,
+      role: 'ROLE_USER',
+      image: null,
+      password: await bcrypt.hash(params.password, 10)
+    });
+
+    const userStored = await user.save();
+    return res.status(200).send({ user: userStored });
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send({ message: 'Error al guardar el usuario' });
+  }
 }
 
 module.exports = {
