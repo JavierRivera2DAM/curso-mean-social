@@ -154,7 +154,8 @@ module.exports = {
     pruebas,
     saveUser,
     loginUser,
-    getUser
+    getUser,
+    getUsers
 }
 
 //Conseguir datos de un usuario
