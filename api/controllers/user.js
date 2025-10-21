@@ -75,13 +75,15 @@ async function loginUser(req, res) {
         if (check) {
             if (params.gettoken) {
                 //devolver token
+                //generar token
     
             } else {
                 //devolver datos de usuario
+                return res.status(200).send({ user });
     
                 }
 
-            return res.status(200).send({ user });
+            
         } else {
             return res.status(404).send({ message: 'El usuario no se ha podido identificar' });
         }
