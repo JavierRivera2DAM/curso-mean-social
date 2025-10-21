@@ -2,6 +2,7 @@
 var bcrypt = require('bcrypt') ;
 
 var User = require('../models/user');
+var jwt = require('../services/jwt');
 
 function home (req, res){
     res.status(200).send({
@@ -74,8 +75,11 @@ async function loginUser(req, res) {
 
         if (check) {
             if (params.gettoken) {
-                //devolver token
-                //generar token
+                //generar y devolver token
+                return res.status(200).send({
+                    token: jwt.createToken(user)
+                });
+
     
             } else {
                 //devolver datos de usuario
