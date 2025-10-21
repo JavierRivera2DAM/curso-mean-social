@@ -60,30 +60,27 @@ async function saveUser(req, res){
   }
 }
 
-async function loginUser(req, res){    
-    
-    var params = req.body;    
-    var email = params.email;
-    var password = params.password;   
+async function loginUser(req, res) {
+    try {
+        const { email, password } = req.body;        
 
-    User.findOne({email: email}, (err, user) => {
-         if(err) return res.status(500).send({message: 'Error en la peticion'});
+        const user = await User.findOne({ email });
 
-         if(!user){
-            return res.status(404).send({message: 'El usuario no se ha podido identificar'});
-         }
-        
-         bcrypt.compare(password, user.password, (err, check) => {
-            if(check){
-                //devolucion datos de usuario
-                return res.status(200).send({user});
-            }
-            
-            else{
-                return res.status(404).send({message: 'El usuario no se ha podido identificar!!'});
-            }
-        });          
-    })
+        if (!user) {
+            return res.status(404).send({ message: 'El usuario no se ha podido identificar' });
+        }
+
+        const check = await bcrypt.compare(password, user.password);
+
+        if (check) {
+            return res.status(200).send({ user });
+        } else {
+            return res.status(404).send({ message: 'El usuario no se ha podido identificar' });
+        }
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send({ message: 'Error en la petición' });
+    }
 }
 
 
@@ -118,4 +115,45 @@ module.exports = {
 //             return res.status(404).send({message: 'El usuario no se ha podido identificar!!'})
 //         }
 //     });
+// }
+
+
+// async function loginUser(req, res){    
+    
+//     var params = req.body;    
+//     var email = params.email;
+//     var password = params.password;   
+
+//     User.findOne({email: email}, (err, user) => {
+//          if(err) return res.status(500).send({message: 'Error en la peticion'});
+
+//          if(!user){
+//             return res.status(404).send({message: 'El usuario no se ha podido identificar'});
+//          }
+        
+//          bcrypt.compare(password, user.password, (err, check) => {
+//             if(check){
+//                 //devolucion datos de usuario
+//                 return res.status(200).send({user});
+//             }
+            
+//             else{
+//                 return res.status(404).send({message: 'El usuario no se ha podido identificar!!'});
+//             }
+//         });          
+//     })
+// }
+
+
+// async function loginUser(req, res){
+//     try {
+//         const { email, password } = req.body;
+
+//         if(!email || !password){
+
+//         }
+        
+//     } catch (error) {
+        
+//     }
 // }
