@@ -73,6 +73,14 @@ async function loginUser(req, res) {
         const check = await bcrypt.compare(password, user.password);
 
         if (check) {
+            if (params.gettoken) {
+                //devolver token
+    
+            } else {
+                //devolver datos de usuario
+    
+                }
+
             return res.status(200).send({ user });
         } else {
             return res.status(404).send({ message: 'El usuario no se ha podido identificar' });
