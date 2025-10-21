@@ -60,30 +60,33 @@ async function saveUser(req, res){
   }
 }
 
-async   function loginUser (req, res){
+function loginUser(req, res){    
+    
     var params = req.body;
-
+    
     var email = params.email;
-    var password = params.password;
+    var password = params.password;   
 
     User.findOne({email: email, password: password}, (err, user) => {
-        if(err) return res.status(500).send({message: 'Error en la peticion'});
+         if(err) return res.status(500).send({message: 'Error en la peticion'});
 
-        if(user){
-            bcrypt.compare(password, user.password, (err, check) => {
-                if(check){
-                    //devolucion datos de usuario
-                    return res.status(200).send({user});
-                }
-                else{
-                    return res.status(404).send({message: 'El usuario no se ha podido identificar'});
-                }
-            });
-        } else{
-            return res.status(404).send({message: 'El usuario no se ha podido identificar!!'})
-        }
-    });
+         if(!user){
+            return res.status(404).send({message: 'El usuario no se ha podido identificar'});
+         }
+        
+         bcrypt.compare(password, user.password, (err, check) => {
+            if(check){
+                //devolucion datos de usuario
+                return res.status(200).send({user});
+            }
+            
+            else{
+                return res.status(404).send({message: 'El usuario no se ha podido identificar!!'});
+            }
+        });          
+    })
 }
+
 
 module.exports = {
     home,
@@ -91,3 +94,29 @@ module.exports = {
     saveUser,
     loginUser
 }
+
+
+// async   function loginUser (req, res){
+//     var params = req.body;
+
+//     var email = params.email;
+//     var password = params.password;
+
+//     User.findOne({email: email, password: password}, (err, user) => {
+//         if(err) return res.status(500).send({message: 'Error en la peticion'});
+
+//         if(user){
+//             bcrypt.compare(password, user.password, (err, check) => {
+//                 if(check){
+//                     //devolucion datos de usuario
+//                     return res.status(200).send({user});
+//                 }
+//                 else{
+//                     return res.status(404).send({message: 'El usuario no se ha podido identificar'});
+//                 }
+//             });
+//         } else{
+//             return res.status(404).send({message: 'El usuario no se ha podido identificar!!'})
+//         }
+//     });
+// }
