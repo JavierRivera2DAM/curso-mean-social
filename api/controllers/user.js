@@ -63,7 +63,7 @@ async function saveUser(req, res){
 
 async function loginUser(req, res) {
     try {
-        const { email, password } = req.body;        
+        const { email, password, gettoken } = req.body;        
 
         const user = await User.findOne({ email });
 
@@ -74,7 +74,7 @@ async function loginUser(req, res) {
         const check = await bcrypt.compare(password, user.password);
 
         if (check) {
-            if (params.gettoken) {
+            if (gettoken) {
                 //generar y devolver token
                 return res.status(200).send({
                     token: jwt.createToken(user)
