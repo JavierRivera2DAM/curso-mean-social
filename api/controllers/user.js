@@ -90,8 +90,7 @@ async function loginUser(req, res) {
                 //devolver datos de usuario
                 return res.status(200).send({ user });
     
-                }
-
+            }
             
         } else {
             return res.status(404).send({ message: 'El usuario no se ha podido identificar' });
@@ -103,16 +102,21 @@ async function loginUser(req, res) {
 }
 
 //Conseguir datos de un usuario
-function getUser(req, res){
-    var userId = req.params.id;
+async function getUser(req, res){
+    try{
+    const userId = req.params.id;
+    const user = await User.findById(userId);
 
-    User.findById(userId, (err, user) => {
-        if(err) return res.status(500).send({message: 'Error en la peticion'});
-
-        if(!user) return res.status(404).send({message: 'El usuario no existe'});
-
+    if(!user){
+        return res.status(404).send({message: 'El usuario no existe'});
+    }
         return res.status(200).send({user});
-    });
+    }
+
+    catch(err){
+        console.error(err);
+        return res.status(500).send({message: 'Error en la peticion'});
+    }
 }
 
 
@@ -124,69 +128,15 @@ module.exports = {
     getUser
 }
 
+//Conseguir datos de un usuario
+// function getUser(req, res){
+//     var userId = req.params.id;
 
-// async   function loginUser (req, res){
-//     var params = req.body;
-
-//     var email = params.email;
-//     var password = params.password;
-
-//     User.findOne({email: email, password: password}, (err, user) => {
+//     User.findById(userId, (err, user) => {
 //         if(err) return res.status(500).send({message: 'Error en la peticion'});
 
-//         if(user){
-//             bcrypt.compare(password, user.password, (err, check) => {
-//                 if(check){
-//                     //devolucion datos de usuario
-//                     return res.status(200).send({user});
-//                 }
-//                 else{
-//                     return res.status(404).send({message: 'El usuario no se ha podido identificar'});
-//                 }
-//             });
-//         } else{
-//             return res.status(404).send({message: 'El usuario no se ha podido identificar!!'})
-//         }
+//         if(!user) return res.status(404).send({message: 'El usuario no existe'});
+
+//         return res.status(200).send({user});
 //     });
-// }
-
-
-// async function loginUser(req, res){    
-    
-//     var params = req.body;    
-//     var email = params.email;
-//     var password = params.password;   
-
-//     User.findOne({email: email}, (err, user) => {
-//          if(err) return res.status(500).send({message: 'Error en la peticion'});
-
-//          if(!user){
-//             return res.status(404).send({message: 'El usuario no se ha podido identificar'});
-//          }
-        
-//          bcrypt.compare(password, user.password, (err, check) => {
-//             if(check){
-//                 //devolucion datos de usuario
-//                 return res.status(200).send({user});
-//             }
-            
-//             else{
-//                 return res.status(404).send({message: 'El usuario no se ha podido identificar!!'});
-//             }
-//         });          
-//     })
-// }
-
-
-// async function loginUser(req, res){
-//     try {
-//         const { email, password } = req.body;
-
-//         if(!email || !password){
-
-//         }
-        
-//     } catch (error) {
-        
-//     }
 // }
