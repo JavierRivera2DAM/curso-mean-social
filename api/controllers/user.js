@@ -149,25 +149,31 @@ async function getUsers(req, res){
 }
 
 //Edicion de datos de usuario
-function updateUser(req, res){
-    var userId = req.params.id;
-    var update = req.body;
+async function updateUser(req, res){
+    try{
+    const userId = req.params.id;
+    const update = req.body;    
 
     //Borrar propiedad password
-    delete update.password;
-
-    if(userId != req.user.sub){
-        return res.status(500).send({message: 'No tienes permiso para actualizar los datos del usuario'});
+    delete update.password;  
+    
+    //Verificar que el usuario autenticado es el dueño del perfil
+    if (userId !== req.user.sub){
+        return res.status(403).send({message: 'No tienes permiso para actualizar los datos del usuario'});
     }
 
-    User.findByIdAndUpdate(userId, update, {new:true}, (err, userUpdated) => {
-        if(!userUpdated){ return res.status(500).send({message: 'Error en la peiticion'});
+    const userUpdated = await User.findByIdAndUpdate(userId, update, { new: true});
+              
+
+        if(!userUpdated){
+            return res.status(404).send({message: 'No se ha podido actualizar el usuario'});
         }
-
-        if(!userUpdated) return res.status(404).send({message: 'No se ha podido actualizar el usuario'});
-
         return res.status(200).send({user: userUpdated});
-    });
+    }
+    catch(err){
+        console.error(err);
+         return res.status(500).send({message: 'Error en la peticion'});
+    }
 }
 
 
@@ -180,3 +186,25 @@ module.exports = {
     getUsers,
     updateUser
 }
+
+// //Edicion de datos de usuario
+// function updateUser(req, res){
+//     var userId = req.params.id;
+//     var update = req.body;
+
+//     //Borrar propiedad password
+//     delete update.password;
+
+//     if(userId != req.user.sub){
+//         return res.status(500).send({message: 'No tienes permiso para actualizar los datos del usuario'});
+//     }
+
+//     User.findByIdAndUpdate(userId, update, {new:true}, (err, userUpdated) => {
+//         if(!userUpdated){ return res.status(500).send({message: 'Error en la peiticion'});
+//         }
+
+//         if(!userUpdated) return res.status(404).send({message: 'No se ha podido actualizar el usuario'});
+
+//         return res.status(200).send({user: userUpdated});
+//     });
+// }
