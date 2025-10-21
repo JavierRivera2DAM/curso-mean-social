@@ -148,6 +148,28 @@ async function getUsers(req, res){
     }
 }
 
+//Edicion de datos de usuario
+function updateUser(req, res){
+    var userId = req.params.id;
+    var update = req.body;
+
+    //Borrar propiedad password
+    delete update.password;
+
+    if(userId != req.user.sub){
+        return res.status(500).send({message: 'No tienes permiso para actualizar los datos del usuario'});
+    }
+
+    User.findByIdAndUpdate(userId, update, {new:true}, (err, userUpdated) => {
+        if(!userUpdated){ return res.status(500).send({message: 'Error en la peiticion'});
+        }
+
+        if(!userUpdated) return res.status(404).send({message: 'No se ha podido actualizar el usuario'});
+
+        return res.status(200).send({user: userUpdated});
+    });
+}
+
 
 module.exports = {
     home,
@@ -155,46 +177,6 @@ module.exports = {
     saveUser,
     loginUser,
     getUser,
-    getUsers
+    getUsers,
+    updateUser
 }
-
-//Conseguir datos de un usuario
-// function getUser(req, res){
-//     var userId = req.params.id;
-
-//     User.findById(userId, (err, user) => {
-//         if(err) return res.status(500).send({message: 'Error en la peticion'});
-
-//         if(!user) return res.status(404).send({message: 'El usuario no existe'});
-
-//         return res.status(200).send({user});
-//     });
-// }
-
-//Devolver un listado de usuarios paginado
-// function getUsers(req, res){
-//     var identity_user_id = req.user.sub;
-
-//     var page = 1;
-//     if (req.params.page) {
-//         page = req.params.page;        
-//     }
-
-//     var itemsPerPage = 5;
-
-//     User.find().sort('_id').paginate(page, itemsPerPage, (err, users, total) => {
-//         if(err){
-//             return res.status(500).send({message: 'error en la peticion'});
-//         }
-
-//             if(!users){
-//                 return res.status(404).send({message: 'No hay usuarios disponibles'});
-//             }
-//         return res.status(200).send({
-//             users,
-//             total,
-//             pages: Math.ceil(total/itemsPerPage)
-//         });
-
-//     });
-// }
