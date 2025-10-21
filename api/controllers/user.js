@@ -62,12 +62,11 @@ async function saveUser(req, res){
 
 function loginUser(req, res){    
     
-    var params = req.body;
-    
+    var params = req.body;    
     var email = params.email;
     var password = params.password;   
 
-    User.findOne({email: email, password: password}, (err, user) => {
+    User.findOne({email: email}, (err, user) => {
          if(err) return res.status(500).send({message: 'Error en la peticion'});
 
          if(!user){
