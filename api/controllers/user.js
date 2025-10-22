@@ -185,19 +185,56 @@ async function updateUser(req, res){
 }
 
 //Subir archivos de imagen/avatar de usuario
-function uploadImage(res, req){
-    var userId = req.params.id;
+//Sustitución función síncrona por asíncrona y uso de 'awaits' en vez de 'callbacks'
+async function uploadImage(req, res){
+    try{
+    const userId = req.params.id;
+    
 
-    if(userId != req.user.sub){
-        return res. status(500).send({message: 'No tienes permiso para actualizar los datos del usuario'})
-    }
-
-    if(req.files){
+    if(userId === req.user.sub){
+        if(!req.files || !req.files.image){
+            return res.status(400).send({ message: 'No se ha proporcionado ninguna imagen'})
+        }
         var file_path = req.files.image.path;
         console.log(file_path);
+
         var file_split = file_path.split('\\');
+        console.log(file_split);
+
+        var file_name = file_split[2];
+        console.log(file_name);
+
+        var ext_split = file_name.split('\.');
+        console.log(ext_split);
+
+        var file_ext = ext_split[1];
+        console.log(file_ext);
+
+        if(file_ext == 'png' || file_ext == 'jpg' || file_ext == 'jpeg' || file_ext == 'gif'){
+            //Actualizar documento de usuario logeado
+        }
+        else{
+            fs.unlink(file_path, (err) => {
+                removeFilesOfUploads(res, file_path, 'Extension no valida');
+            });
+        }
+        
+    }else{  
+            return res.status(200).send({ message: 'Imagen subida correctamente'})
+        }
 
     }
+
+catch(err){
+    console.error(err);
+    removeFilesOfUploads(res, file_path, 'No tienes permiso para actualizar los datos del usuario');
+}
+}
+
+function removeFilesOfUploads(res, file_path, message){
+    fs.unlink(file_path, (err) => {
+        return res.status(200).send({message: message});
+    });
 }
 
 //Exportaciones de los módulos empleados
