@@ -189,52 +189,38 @@ async function updateUser(req, res){
 
 //Subir archivos de imagen/avatar de usuario
 //Sustitución función síncrona por asíncrona y uso de 'awaits' en vez de 'callbacks'
- function uploadImage(req, res){
+ async function uploadImage(req, res){
     
     var userId = req.params.id;    
 
     if(userId != req.user.sub){
-        removeFilesOfUploads(res, file_path, 'No tienes permiso para actualizar los datos del usuario');
+        return res.status(403).send({message: 'No tienes permiso para actualizar los datos del usuario'});
     }
         if(!req.files || !req.files.image){
             return res.status(400).send({ message: 'No se han subido imagenes'});
-        }            
+        }
+
         var file_path = req.files.image.path;
-        console.log(file_path);
+        var file_name = require('path').basename(file_path);
+        var file_ext = require('path').extname(file_name).toLowerCase().replace('.', '');
+        var validExtensions = ['png', 'jpg', 'jpeg', 'gif'];                
 
-        var file_split = file_path.split('\\');
-        console.log(file_split);
+        if(!validExtensions.includes(file_ext)){
+            removeFilesOfUploads(res, file_path, 'Extension no valida');
+        }
 
-        var file_name = file_split[2];
-        console.log(file_name);
-
-        var ext_split = file_name.split('\.');
-        console.log(ext_split);
-
-        var file_ext = ext_split[1];
-        console.log(file_ext);
-                
-
-        if(file_ext == 'png' || file_ext == 'jpg' || file_ext == 'jpeg' || file_ext == 'gif'){
+        try{
             //Actualizar documento de usuario logeado
-            User.findByIdAndUpdate(userId, {image: file_name}, {new:true}, (err, userUpdated) => {
-                if(err){
-                    return res.status(500).send({message: 'Error en la peticion'});
-                }
-
+            var userUpdated = await User.findByIdAndUpdate(userId, { image: file_name }, { new: true});
+                
                 if(!userUpdated){
                     return res.status(404).send({message: 'No se ha podido actualizar'});
                 }
-
                 return res.status(200).send({user: userUpdated});
-
-            });
-        }
-        
-
-         else{             
-                 removeFilesOfUploads(res, file_path, 'Extension no valida');
-         }                    
+            }
+         catch(err){
+            return res.status(500).send({message: 'Error en la peticion'});
+        }                            
 }
 
 function removeFilesOfUploads(res, file_path, message){
