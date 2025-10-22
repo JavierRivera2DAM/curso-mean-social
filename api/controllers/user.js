@@ -206,7 +206,7 @@ async function updateUser(req, res){
         var validExtensions = ['png', 'jpg', 'jpeg', 'gif'];                
 
         if(!validExtensions.includes(file_ext)){
-            removeFilesOfUploads(res, file_path, 'Extension no valida');
+           return removeFilesOfUploads(res, file_path, 'Extension no valida');
         }
 
         try{
