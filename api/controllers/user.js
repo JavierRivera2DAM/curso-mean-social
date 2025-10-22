@@ -4,8 +4,8 @@ var bcrypt = require('bcrypt') ;
 var User = require('../models/user');
 var jwt = require('../services/jwt');
 
-const fs = require('fs');
-const path = require('path');
+var fs = require('fs');
+var path = require('path');
 
 
 //Metodos de Prueba
@@ -189,15 +189,14 @@ async function updateUser(req, res){
 
 //Subir archivos de imagen/avatar de usuario
 //Sustitución función síncrona por asíncrona y uso de 'awaits' en vez de 'callbacks'
-async function uploadImage(req, res){
-    try{
-    const userId = req.params.id;
+ function uploadImage(req, res){
     
+    var userId = req.params.id;    
 
-    if(userId === req.user.sub){
-        if(!req.files || !req.files.image){
-            return res.status(400).send({ message: 'No se ha proporcionado ninguna imagen'})
-        }
+    if(userId != req.user.sub){
+        removeFilesOfUploads(res, file_path, 'No tienes permiso para actualizar los datos del usuario');
+    
+        if(req.files){            
         var file_path = req.files.image.path;
         console.log(file_path);
 
@@ -212,26 +211,21 @@ async function uploadImage(req, res){
 
         var file_ext = ext_split[1];
         console.log(file_ext);
+        }        
 
         if(file_ext == 'png' || file_ext == 'jpg' || file_ext == 'jpeg' || file_ext == 'gif'){
             //Actualizar documento de usuario logeado
         }
-        else{
-            fs.unlink(file_path, (err) => {
-                removeFilesOfUploads(res, file_path, 'Extension no valida');
-            });
-        }
         
-    }else{  
-            return res.status(200).send({ message: 'Imagen subida correctamente'})
-        }
 
-    }
-
-catch(err){
-    console.error(err);
-    removeFilesOfUploads(res, file_path, 'No tienes permiso para actualizar los datos del usuario');
-}
+         else{             
+                 removeFilesOfUploads(res, file_path, 'Extension no valida');
+         }         
+ 
+        } else{
+             return res.status(200).send({ message: 'No se han subido imagenes'});
+         }
+           
 }
 
 function removeFilesOfUploads(res, file_path, message){
