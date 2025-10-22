@@ -7,7 +7,7 @@ var api = express.Router();
 var md_auth = require('../middlewares/authenticated');
 
 //Definicion de las rutas
-api.get('/pruebas-follow', md_auth.ensureAuth, FollowController.prueba);
+api.post('/follow', md_auth.ensureAuth, FollowController.saveFollow);
 
 //Exportacion de los metodos
 module.exports = api;
