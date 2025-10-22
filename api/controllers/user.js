@@ -184,6 +184,22 @@ async function updateUser(req, res){
     }
 }
 
+//Subir archivos de imagen/avatar de usuario
+function uploadImage(res, req){
+    var userId = req.params.id;
+
+    if(userId != req.user.sub){
+        return res. status(500).send({message: 'No tienes permiso para actualizar los datos del usuario'})
+    }
+
+    if(req.files){
+        var file_path = req.files.image.path;
+        console.log(file_path);
+        var file_split = file_path.split('\\');
+
+    }
+}
+
 //Exportaciones de los módulos empleados
 module.exports = {
     home,
@@ -192,7 +208,8 @@ module.exports = {
     loginUser,
     getUser,
     getUsers,
-    updateUser
+    updateUser,
+    uploadImage
 }
 
 // //Edicion de datos de usuario
