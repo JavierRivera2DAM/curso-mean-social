@@ -235,15 +235,16 @@ function removeFilesOfUploads(res, file_path, message){
 //Devolver Imagen de Usuario
 function getImageFile(req, res){
     var image_file = req.params.imageFile;    
-    var path_file = './uploads/users/'+image_file;
+    var path_file = path.resolve('./uploads/users/', image_file);
 
-    fs.exists(path_file, (exists) => {
-        if (exists){
+    fs.access(path_file, fs.constants.F_OK, (err) => {
+        if (err){
+            res.status(200).send({message: 'No existe la imagen...'});            
+        }
             res.sendFile(path.resolve(path_file));
-        }
-        else{
-            res.status(200).send({message: 'No existe la imagen...'});
-        }
+            if(err){
+                return res.status(500).send({ message: 'Error al enviar la imagen'});
+            }       
     });
 }
 
