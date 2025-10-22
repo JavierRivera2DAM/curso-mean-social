@@ -7,7 +7,7 @@ var app = express();
 
 //Cargar Rutas
 var user_routes = require('./routes/user');
-var follow_routes = require('./routes/folllow');
+var follow_routes = require('./routes/follow');
 
 //Middlewares
 app.use(bodyParser.urlencoded({extended:false}));
