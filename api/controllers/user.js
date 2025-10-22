@@ -20,6 +20,8 @@ function pruebas (req, res){
 }
 
 //Registro de Usuario
+//En el curso se utiliza metodología de callbacks, debido a que usa una versión más antigua de Mongoose. Se sustituye por uso de función asíncrona y 'await' 
+
 async function saveUser(req, res){
     console.log('req.body:', req.body);
     
@@ -66,6 +68,8 @@ async function saveUser(req, res){
 
 
 //Login
+//Se sustituye el uso de la función normal por asíncrona. y en vez de usar 'callbacks' (deprecados en esta versión de Mongoose), se usa 'await'
+
 async function loginUser(req, res) {
     try {
         const { email, password, gettoken } = req.body;        
@@ -102,6 +106,7 @@ async function loginUser(req, res) {
 }
 
 //Conseguir datos de un usuario
+//Sustitución función síncrona por asíncrona y uso de 'awaits' en vez de 'callbacks'
 async function getUser(req, res){
     try{
     const userId = req.params.id;
@@ -120,6 +125,7 @@ async function getUser(req, res){
 }
 
 //Devolver un listado de usuarios paginado
+//Sustitución función síncrona por asíncrona y uso de 'awaits' en vez de 'callbacks'
 async function getUsers(req, res){
     try{        
     const identity_user_id = req.user.sub;
@@ -149,6 +155,8 @@ async function getUsers(req, res){
 }
 
 //Edicion de datos de usuario
+//Sustitución función síncrona por asíncrona y uso de 'awaits' en vez de 'callbacks'
+
 async function updateUser(req, res){
     try{
     const userId = req.params.id;
@@ -176,7 +184,7 @@ async function updateUser(req, res){
     }
 }
 
-
+//Exportaciones de los módulos empleados
 module.exports = {
     home,
     pruebas,
