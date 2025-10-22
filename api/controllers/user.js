@@ -195,8 +195,10 @@ async function updateUser(req, res){
 
     if(userId != req.user.sub){
         removeFilesOfUploads(res, file_path, 'No tienes permiso para actualizar los datos del usuario');
-    
-        if(req.files){            
+    }
+        if(!req.files || !req.files.image){
+            return res.status(400).send({ message: 'No se han subido imagenes'});
+        }            
         var file_path = req.files.image.path;
         console.log(file_path);
 
@@ -211,12 +213,12 @@ async function updateUser(req, res){
 
         var file_ext = ext_split[1];
         console.log(file_ext);
-        }        
+                
 
         if(file_ext == 'png' || file_ext == 'jpg' || file_ext == 'jpeg' || file_ext == 'gif'){
             //Actualizar documento de usuario logeado
             User.findByIdAndUpdate(userId, {image: file_name}, {new:true}, (err, userUpdated) => {
-                
+
 
             });
         }
@@ -224,12 +226,8 @@ async function updateUser(req, res){
 
          else{             
                  removeFilesOfUploads(res, file_path, 'Extension no valida');
-         }         
- 
-        } else{
-             return res.status(200).send({ message: 'No se han subido imagenes'});
-         }
-           
+         } 
+                    
 }
 
 function removeFilesOfUploads(res, file_path, message){
