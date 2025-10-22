@@ -194,7 +194,7 @@ async function updateUser(req, res){
     var userId = req.params.id;    
 
     if(userId != req.user.sub){
-        return res.status(403).send({message: 'No tienes permiso para actualizar los datos del usuario'});
+        return removeFilesOfUploads(res, file_path, 'No tienes permiso para actualizar los datos del usuario');
     }
         if(!req.files || !req.files.image){
             return res.status(400).send({ message: 'No se han subido imagenes'});
