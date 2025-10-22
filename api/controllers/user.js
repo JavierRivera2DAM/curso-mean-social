@@ -4,6 +4,9 @@ var bcrypt = require('bcrypt') ;
 var User = require('../models/user');
 var jwt = require('../services/jwt');
 
+const fs = require('fs');
+const path = require('path');
+
 
 //Metodos de Prueba
 function home (req, res){
