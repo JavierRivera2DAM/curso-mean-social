@@ -234,12 +234,14 @@ async function updateUser(req, res){
 
          else{             
                  removeFilesOfUploads(res, file_path, 'Extension no valida');
-         } 
-                    
+         }                    
 }
 
 function removeFilesOfUploads(res, file_path, message){
     fs.unlink(file_path, (err) => {
+        if (err) {
+        return res.status(500).send({message: 'Error al eliminar el archivo'});
+    }
         return res.status(200).send({message: message});
     });
 }
