@@ -34,7 +34,8 @@ function deleteFollow(req, res){
     var userId = req.user.sub;
     var followId = req.params.id;
 
-    Follow.find()
+    //Importante. Hay que usar 'findOneAndDelete' si se deja 'findOne' no lo borra, aunque desde la terminal de postman muestre mensaje de exito
+    Follow.findOneAndDelete()
     .then(deletedFollow => {
         if(!deletedFollow){
             return res.status(404).send({message: 'No se encontró el seguimiento'});            
