@@ -29,15 +29,22 @@ function saveFollow(req, res){
     });
 }
 
+//Se actualiza la metodologia original para usar '.then - .catch'
 function deleteFollow(req, res){
     var userId = req.user.sub;
     var followId = req.params.id;
 
-    Follow.find({'user':userId, 'followed':followId}).remove(err => {
-        if(err) return res.status(500).send({message: 'Error al dejar de seguir'});
-
-        return res.status(200).send({message: 'El follow se ha eliminado'});
+    Follow.find()
+    .then(deletedFollow => {
+        if(!deletedFollow){
+            return res.status(404).send({message: 'No se encontró el seguimiento'});            
+        }
+        return res.status(200).send({message: 'El follow se ha eliminado'});        
     })
+    
+    .catch(err => {
+        return res.status(500).send({message: 'Error al dejar de seguir', error: err});
+    });
 }
 
 module.exports = {
