@@ -90,7 +90,8 @@ async function getFollowingUsers(req, res) {
     }
 }
 
-function getFollowedUsers(req, res){
+async function getFollowedUsers(req, res){
+    try{
     var userId = req.user.sub;
 
     if(req.params.id && req.params.page){
@@ -108,10 +109,7 @@ function getFollowedUsers(req, res){
     var itemsPerPage = 4;
 
     Follow.find({followed:userId}).populate({path: 'followed'}).paginate(page, itemsPerPage, (err, follows, total) => {
-        if(err){
-        return res.status(500).send({message: 'Error en el servidor'});
-        }
-
+        
         if(!follows){
             return res.status(404).send({message: 'No te sigue ningun usuario'});
         }
@@ -121,6 +119,9 @@ function getFollowedUsers(req, res){
             follows
         });
      })
+    } catch {
+        return res.status(500).send({message: 'Error en el servidor'});
+    }
  }
 
 
@@ -163,3 +164,37 @@ module.exports = {
 //         });
 //     })
 // }
+
+
+// function getFollowedUsers(req, res){
+//     var userId = req.user.sub;
+
+//     if(req.params.id && req.params.page){
+//         userId = req.params.id;
+//     }
+//     var page = 1;
+    
+//     if(req.pararms.page){
+//         page = req.params.page;
+//     }
+//     else{
+//         page = req.params.id;
+//     }
+
+//     var itemsPerPage = 4;
+
+//     Follow.find({followed:userId}).populate({path: 'followed'}).paginate(page, itemsPerPage, (err, follows, total) => {
+//         if(err){
+//         return res.status(500).send({message: 'Error en el servidor'});
+//         }
+
+//         if(!follows){
+//             return res.status(404).send({message: 'No te sigue ningun usuario'});
+//         }
+//         return res.status(200).send({
+//             total: total,
+//             pages: Math.ceil(total/itemsPerPage),
+//             follows
+//         });
+//      })
+//  }
