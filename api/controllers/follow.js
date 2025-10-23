@@ -53,30 +53,61 @@ function deleteFollow(req, res){
 //Se crea el Metodo para Listar los Ususarios que se estan siguiendo
 //Se procede a modificar 'getFollowingUsers' para evitar el error en el uso de callbacks desactualizado. Metodo promises '.then - .catch'
 
-function getFollowingUsers(req,res){
-    let userId = req.user.id || req.user.sub;
-    let page = parseInt(req.params.page) || 1;
-    const itemsPerPage = 4;    
+// function getFollowingUsers(req,res){
+//     let userId = req.user.id || req.user.sub;
+//     let page = parseInt(req.params.page) || 1;
+//     const itemsPerPage = 4;    
 
-    Follow.find({ user: userId})
+//     Follow.find({ user: userId})
     
-    .populate('followed')
-    .paginate(page, itemsPerPage)
-     .then((result) => {
-        const { docs: follows, totalDocs: total } = result;        
+//     .populate('followed')
+//     .paginate(page, itemsPerPage)
+//      .then((result) => {
+//         const { docs: follows, totalDocs: total } = result;        
 
-        if(!follows || follows.length === 0){
-            return res.status(404).send({message: 'No estas siguiendo a un usuario'});
+//         if(!follows || follows.length === 0){
+//             return res.status(404).send({message: 'No estas siguiendo a un usuario'});
+//         }
+//         return res.status(200).send({
+//             total,
+//             pages: Math.ceil(total/itemsPerPage),
+//             follows
+//         });
+//     })
+//     .catch((err) => {
+//         return res.status(500).send({message: 'Error en el servidor', error: err});
+//     });
+// }
+
+async function getFollowingUsers(req, res) {
+    try {
+        const userId = req.params.id || req.user.sub;
+        const page = parseInt(req.params.page) || 1;
+        const itemsPerPage = 4;
+
+        const result = await Follow.paginate(
+            { user: userId },
+            {
+                page,
+                limit: itemsPerPage,
+                populate: { path: 'followed' }
+            }
+        );
+
+        const { docs: follows, totalDocs: total } = result;
+
+        if (!follows || follows.length === 0) {
+            return res.status(404).send({ message: 'No estás siguiendo a ningún usuario' });
         }
+
         return res.status(200).send({
             total,
-            pages: Math.ceil(total/itemsPerPage),
+            pages: Math.ceil(total / itemsPerPage),
             follows
         });
-    })
-    .catch((err) => {
-        return res.status(500).send({message: 'Error en el servidor', error: err});
-    });
+    } catch (err) {
+        return res.status(500).send({ message: 'Error en el servidor', error: err });
+    }
 }
 
 module.exports = {

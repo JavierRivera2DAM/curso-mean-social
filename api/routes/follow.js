@@ -9,6 +9,7 @@ var md_auth = require('../middlewares/authenticated');
 //Definicion de las rutas
 api.post('/follow', md_auth.ensureAuth, FollowController.saveFollow);
 api.delete('/follow/:id', md_auth.ensureAuth, FollowController.deleteFollow);
+api.get('/following/:id', md_auth.ensureAuth, FollowController.getFollowingUsers);   //:id?/page?
 
 //Exportacion de los metodos
 module.exports = api;
