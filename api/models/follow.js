@@ -1,13 +1,13 @@
 'use strict'
 
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
-FollowSchema.plugin(mongoosePaginate);
+const Schema = mongoose.Schema;
 
 var FollowSchema = Schema({ 
     user: { type: Schema.ObjectId, ref: 'User'},
     followed: { type: Schema.ObjectId, ref: 'User'}
 });
+FollowSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Follow', FollowSchema);
