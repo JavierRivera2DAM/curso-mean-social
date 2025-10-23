@@ -51,36 +51,32 @@ function deleteFollow(req, res){
 }
 
 //Se crea el Metodo para Listar los Ususarios que se estan siguiendo
+//Se procede a modificar 'getFollowingUsers' para evitar el error en el uso de callbacks desactualizado. Metodo promises '.then - .catch'
 
 function getFollowingUsers(req,res){
-    var userId = req.user.sub;
+    let userId = req.user.id || req.user.sub;
+    let page = parseInt(req.params.page) || 1;
+    const itemsPerPage = 4;    
 
-    if(req.params.id){
-        userId = req.params.id;
-    }
-
-    var page = 1;
+    Follow.find({ user: userId})
     
-    if(req.pararms.page){
-        page = req.params.page;
-    }
+    .populate('followed')
+    .paginate(page, itemsPerPage)
+     .then((result) => {
+        const { docs: follows, totalDocs: total } = result;        
 
-    var itemsPerPage = 4;
-
-    Follow.find({user:userId}).populate({path: 'followed'}).paginate(page, itemsPerPage, (err, follows, total) => {
-        if(err){
-        return res.status(500).send({message: 'Error en el servidor'});
-        }
-
-        if(!follows){
+        if(!follows || follows.length === 0){
             return res.status(404).send({message: 'No estas siguiendo a un usuario'});
         }
         return res.status(200).send({
-            total: total,
+            total,
             pages: Math.ceil(total/itemsPerPage),
             follows
         });
     })
+    .catch((err) => {
+        return res.status(500).send({message: 'Error en el servidor', error: err});
+    });
 }
 
 module.exports = {
@@ -88,3 +84,36 @@ module.exports = {
     deleteFollow,
     getFollowingUsers
 }
+
+
+
+// function getFollowingUsers(req,res){
+//     var userId = req.user.sub;
+
+//     if(req.params.id){
+//         userId = req.params.id;
+//     }
+
+//     var page = 1;
+    
+//     if(req.pararms.page){
+//         page = req.params.page;
+//     }
+
+//     var itemsPerPage = 4;
+
+//     Follow.find({user:userId}).populate({path: 'followed'}).paginate(page, itemsPerPage, (err, follows, total) => {
+//         if(err){
+//         return res.status(500).send({message: 'Error en el servidor'});
+//         }
+
+//         if(!follows){
+//             return res.status(404).send({message: 'No estas siguiendo a un usuario'});
+//         }
+//         return res.status(200).send({
+//             total: total,
+//             pages: Math.ceil(total/itemsPerPage),
+//             follows
+//         });
+//     })
+// }
