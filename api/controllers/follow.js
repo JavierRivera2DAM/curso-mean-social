@@ -8,6 +8,7 @@ var User = require('../models/user');
 var Follow = require('../models/follow');
 const follow = require('../models/follow');
 
+//En esta funcion vamos a usar la metodologia de '.then - .catch' para evitar el error por los 'callbacks' desactualizados
 function saveFollow(req, res){
     var params = req.body;
 
@@ -16,15 +17,15 @@ function saveFollow(req, res){
     follow.user = req.user.sub;
     follow.followed = params.followed;
 
-    follow.save((err, followStored) => {
-        if(err){
-            return res.status(500).send({message: 'Error al guardar el seguimiento'});
+    follow.save()
+    .then(followStored => {
+        if(!followStored){
+            return res.status(404).message.send({ message: 'El seguimiento no se ha guardado'});
         }
-
-        if(!followed){
-            return resw.status(404).message.send({message: 'El seguimiento no se ha guardado'});
-        }
-        return res.status(200).send({follow:followStored});
+        return res.status(200).send({ follow:followStored });
+    })
+    .catch(err => {
+        return res.status(500).send({ message: 'Error al guardar el seguimiento', error: err });
     });
 }
 
