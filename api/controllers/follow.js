@@ -2,7 +2,7 @@
 
 //var path = require('path');
 //var fs = require('fs');
-var mongoosePaginate = require('mongoose-pagination');
+var mongoosePaginate = require('mongoose-paginate-v2');
 
 var User = require('../models/user');
 var Follow = require('../models/follow');
@@ -51,38 +51,12 @@ function deleteFollow(req, res){
 }
 
 //Se crea el Metodo para Listar los Ususarios que se estan siguiendo
-//Se procede a modificar 'getFollowingUsers' para evitar el error en el uso de callbacks desactualizado. Metodo promises '.then - .catch'
-
-// function getFollowingUsers(req,res){
-//     let userId = req.user.id || req.user.sub;
-//     let page = parseInt(req.params.page) || 1;
-//     const itemsPerPage = 4;    
-
-//     Follow.find({ user: userId})
-    
-//     .populate('followed')
-//     .paginate(page, itemsPerPage)
-//      .then((result) => {
-//         const { docs: follows, totalDocs: total } = result;        
-
-//         if(!follows || follows.length === 0){
-//             return res.status(404).send({message: 'No estas siguiendo a un usuario'});
-//         }
-//         return res.status(200).send({
-//             total,
-//             pages: Math.ceil(total/itemsPerPage),
-//             follows
-//         });
-//     })
-//     .catch((err) => {
-//         return res.status(500).send({message: 'Error en el servidor', error: err});
-//     });
-// }
+//Se procede a modificar 'getFollowingUsers' para evitar el error en el uso de callbacks desactualizado. Metodo asincrono 'await'
 
 async function getFollowingUsers(req, res) {
     try {
         const userId = req.params.id || req.user.sub;
-        const page = parseInt(req.params.page) || 1;
+        const page = parseInt(req.query.page) || 1;  //Posible Sugerencia de Manejo const page = Number.isNaN(parseInt(req.query.page)) ? 1 : parseInt(req.query.page);
         const itemsPerPage = 4;
 
         const result = await Follow.paginate(
