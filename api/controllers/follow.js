@@ -8,6 +8,7 @@ var User = require('../models/user');
 var Follow = require('../models/follow');
 const follow = require('../models/follow');
 
+//Se crea el metodo 'saveFollow' para guardar los follows de cada usuario
 //En esta funcion vamos a usar la metodologia de '.then - .catch' para evitar el error por los 'callbacks' desactualizados
 function saveFollow(req, res){
     var params = req.body;
@@ -29,6 +30,7 @@ function saveFollow(req, res){
     });
 }
 
+//Se crea el metodo para borrar Usuario Seguido
 //Se actualiza la metodologia original para usar '.then - .catch'
 function deleteFollow(req, res){
     var userId = req.user.sub;
@@ -48,7 +50,41 @@ function deleteFollow(req, res){
     });
 }
 
+//Se crea el Metodo para Listar los Ususarios que se estan siguiendo
+
+function getFollowingUsers(req,res){
+    var userId = req.user.sub;
+
+    if(req.params.id){
+        userId = req.params.id;
+    }
+
+    var page = 1;
+    
+    if(req.pararms.page){
+        page = req.params.page;
+    }
+
+    var itemsPerPage = 4;
+
+    Follow.find({user:userId}).populate({path: 'followed'}).paginate(page, itemsPerPage, (err, follows, total) => {
+        if(err){
+        return res.status(500).send({message: 'Error en el servidor'});
+        }
+
+        if(!follows){
+            return res.status(404).send({message: 'No estas siguiendo a un usuario'});
+        }
+        return res.status(200).send({
+            total: total,
+            pages: Math.ceil(total/itemsPerPage),
+            follows
+        });
+    })
+}
+
 module.exports = {
     saveFollow,
-    deleteFollow
+    deleteFollow,
+    getFollowingUsers
 }
