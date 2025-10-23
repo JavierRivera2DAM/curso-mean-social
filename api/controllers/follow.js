@@ -55,8 +55,15 @@ function deleteFollow(req, res){
 
 async function getFollowingUsers(req, res) {
     try {
-        const userId = req.params.id || req.user.sub;
-        const page = parseInt(req.query.page) || 1;  //Posible Sugerencia de Manejo const page = Number.isNaN(parseInt(req.query.page)) ? 1 : parseInt(req.query.page);
+        let userId = req.params.id;
+
+        // Si no hay id o el id es inválido, usar el usuario autenticado
+        if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+            userId = req.user.sub;
+        }
+
+        const rawPage = req.params.page || req.query.page;
+        const page = Number.isNaN(parseInt(rawPage)) ? 1 : parseInt(rawPage);
         const itemsPerPage = 4;
 
         const result = await Follow.paginate(
@@ -68,19 +75,16 @@ async function getFollowingUsers(req, res) {
             }
         );
 
-        const { docs: follows, totalDocs: total } = result;
-
-        if (!follows || follows.length === 0) {
-            return res.status(404).send({ message: 'No estás siguiendo a ningún usuario' });
-        }
+        const { docs: follows, totalDocs: total = 0 } = result;
 
         return res.status(200).send({
             total,
             pages: Math.ceil(total / itemsPerPage),
+            currentPage: page,
             follows
         });
     } catch (err) {
-        return res.status(500).send({ message: 'Error en el servidor', error: err });
+        return res.status(500).send({ message: 'Error en el servidor', error: err.message });
     }
 }
 
