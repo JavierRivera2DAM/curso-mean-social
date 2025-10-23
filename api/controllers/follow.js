@@ -21,7 +21,7 @@ function saveFollow(req, res){
     follow.save()
     .then(followStored => {
         if(!followStored){
-            return res.status(404).message.send({ message: 'El seguimiento no se ha guardado'});
+            return res.status(404).send({ message: 'El seguimiento no se ha guardado'});
         }
         return res.status(200).send({ follow:followStored });
     })
