@@ -3,6 +3,7 @@
 //var path = require('path');
 //var fs = require('fs');
 var mongoosePaginate = require('mongoose-paginate-v2');
+const mongoose = require('mongoose');
 
 var User = require('../models/user');
 var Follow = require('../models/follow');
@@ -62,6 +63,7 @@ async function getFollowingUsers(req, res) {
             userId = req.user.sub;
         }
 
+        //Para poder emplear cualquier tipo de valor en el campo del '(/:id)' sin que salte una excepcion o error
         const rawPage = req.params.page || req.query.page;
         const page = Number.isNaN(parseInt(rawPage)) ? 1 : parseInt(rawPage);
         const itemsPerPage = 4;
