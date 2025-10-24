@@ -13,5 +13,8 @@ api.get('/following/', md_auth.ensureAuth, FollowController.getFollowingUsers); 
 api.get('/following/:id', md_auth.ensureAuth, FollowController.getFollowingUsers); 
 api.get('/following/:id/:page', md_auth.ensureAuth, FollowController.getFollowingUsers);
 api.get('/followed/:id/:page', md_auth.ensureAuth, FollowController.getFollowedUsers);
+api.get('/get-my-follows/:followed?', md_auth.ensureAuth, FollowController.getMyFollows);
+
+
 //Exportacion de los metodos
 module.exports = api;
