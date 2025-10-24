@@ -7,6 +7,7 @@ var jwt = require('../services/jwt');
 
 var fs = require('fs');
 var path = require('path');
+const follow = require('../models/follow');
 
 
 //Metodos de Prueba
@@ -129,6 +130,30 @@ async function getUser(req, res){
         return res.status(500).send({message: 'Error en la peticion'});
     }
 }
+
+//Explicacion Metodologia 'Async/Await' del Curso
+//Se crea la Funcion Asincrona 'followThisUser'
+async function followThisUser(identity_user_id, userId){
+    var following = await Follow.findOne({"user": identity_user_id, "followed":userId}).exec((err, follow) => {
+        if(err){
+            return handleError(err);
+        }
+        return follow;
+    }); 
+    
+    var followed = await Follow.findOne({"user": identity_user_id, "followed":userId}).exec((err, follow) => {
+        if(err){
+            return handleError(err);
+        }
+        return follow;
+    });
+
+    return {
+        following: following,
+        followed: followed
+    }
+}
+
 
 //Devolver un listado de usuarios paginado
 //Sustitución función síncrona por asíncrona y uso de 'awaits' en vez de 'callbacks'
