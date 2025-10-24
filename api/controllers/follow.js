@@ -11,20 +11,28 @@ const follow = require('../models/follow');
 
 //Se crea el metodo 'saveFollow' para guardar los follows de cada usuario
 //En esta funcion vamos a usar la metodologia de '.then - .catch' para evitar el error por los 'callbacks' desactualizados
-function saveFollow(req, res){
+function saveFollow(req, res) {
     var params = req.body;
 
-    var follow = new Follow();    
-    //La propiedad 'user' del objeto 'req' adjunta un objeto con el usuario que esta logeado. Setea el user en 'authenticated.js', en el payload
+    var follow = new Follow();
     follow.user = req.user.sub;
     follow.followed = params.followed;
 
-    follow.save()
-    .then(followStored => {
-        if(!followStored){
-            return res.status(404).send({ message: 'El seguimiento no se ha guardado'});
+    // Verificar si ya existe el seguimiento
+    Follow.findOne({ user: follow.user, followed: follow.followed })
+    .then(existingFollow => {
+        if (existingFollow) {
+            return res.status(409).send({ message: 'Ya estás siguiendo a este usuario' });
         }
-        return res.status(200).send({ follow:followStored });
+
+        // Si no existe, guardar el nuevo seguimiento
+        return follow.save();
+    })
+    .then(followStored => {
+        if (!followStored) {
+            return res.status(404).send({ message: 'El seguimiento no se ha guardado' });
+        }
+        return res.status(200).send({ follow: followStored });
     })
     .catch(err => {
         return res.status(500).send({ message: 'Error al guardar el seguimiento', error: err });
