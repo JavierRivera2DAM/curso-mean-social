@@ -123,7 +123,11 @@ async function getUser(req, res){
     //const follow = await Follow.findOne({"user":req.user.sub, "followed":userId});
     
     followThisUser(req.user.sub, userId).then((value) => {    
-        return res.status(200).send({user, value});        
+        return res.status(200).send({
+            user,
+            following: value.following,
+            followed: value.followed
+        });        
     });
 }
     catch(err){
