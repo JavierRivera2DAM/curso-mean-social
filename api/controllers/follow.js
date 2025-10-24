@@ -106,6 +106,7 @@ async function getFollowingUsers(req, res) {
     }
 }
 
+//Devolver los Usuarios que Siguen a un Usuario
 async function getFollowedUsers(req, res){
     try{
     let userId = req.user.sub;
@@ -144,21 +145,46 @@ async function getFollowedUsers(req, res){
  }
 
 //Funcion para devolver los Ususarios que Sigo
-function getMyFollows(req, res){
-    var userId = req.user.sub;    
+async function getMyFollows(req, res){
+    try{
+        const userId = req.user.sub;
+        const isFollowedView = req.params.followed;
 
-    var find = Follow.find({user: userId});
+        // const query = isFollowedView
+        //     ? { followed: userId }
+        //     : { user: userId };
 
-    if(req.params.followed){
-         find = Follow.find({followed: userId});
+        //Se aplica la logica de mostrar los usuarios seguidos o los que me siguen. Usando un booleano
+        let query = {};
+        if (isFollowedView === true){ //(Logica Booleana para llevar a cabo la busqueda)
+        query = {followed: userId};
+        }
+        else{
+        query = {user: userId};
+        }
+
+        const follows = await Follow.find(query).populate('userfollowed');
+
+        return res.status(200).send({follows});
+    }
+    catch(err){
+        return res.status(500).send({message: 'Error en el servidor', error: err})
     }
 
-    find.populate('user followed').exec((err, follows) => {
-        if(err){
-            return res.status(500).send({message: 'Error en el servidor'});
-        }
-        return res.status(200).send({follows});
-    });
+    // var userId = req.user.sub;    
+
+    // var find = Follow.find({user: userId});
+
+    // if(req.params.followed){
+    //      find = Follow.find({followed: userId});
+    // }
+
+    // find.populate('user followed').exec((err, follows) => {
+    //     if(err){
+    //         return res.status(500).send({message: 'Error en el servidor'});
+    //     }
+    //     return res.status(200).send({follows});
+    // });
 }
 
 
@@ -238,3 +264,20 @@ module.exports = {
 //         });
 //      })
 //  }
+
+// function getMyFollows(req, res){
+//     var userId = req.user.sub;    
+
+//     var find = Follow.find({user: userId});
+
+//     if(req.params.followed){
+//          find = Follow.find({followed: userId});
+//     }
+
+//     find.populate('user followed').exec((err, follows) => {
+//         if(err){
+//             return res.status(500).send({message: 'Error en el servidor'});
+//         }
+//         return res.status(200).send({follows});
+//     });
+// }
