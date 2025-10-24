@@ -2,6 +2,7 @@
 var bcrypt = require('bcrypt') ;
 
 var User = require('../models/user');
+var Follow = require('../models/follow');
 var jwt = require('../services/jwt');
 
 var fs = require('fs');
