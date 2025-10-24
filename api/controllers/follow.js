@@ -163,7 +163,7 @@ async function getMyFollows(req, res){
         query = {user: userId};
         }
 
-        const follows = await Follow.find(query).populate('userfollowed');
+        const follows = await Follow.find(query).populate('user followed');
 
         return res.status(200).send({follows});
     }
