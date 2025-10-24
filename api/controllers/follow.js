@@ -72,8 +72,16 @@ async function getFollowingUsers(req, res) {
         }
 
         //Para poder emplear cualquier tipo de valor en el campo del '(/:id)' sin que salte una excepcion o error
+        
+        //Primero se busca dentro de 'req.params.page' en las rutas del tipo '/usuario/:page'
+        //Si no lo localiza, busca dentro de las rutas del tipo '/usuario?/page'
+        
         const rawPage = req.params.page || req.query.page;
+
+        //Se realiza la conversion de 'rawPage' a número. Si no es válido ('NAN'), se emplea la pagina 1 por defecto
         const page = Number.isNaN(parseInt(rawPage)) ? 1 : parseInt(rawPage);
+        
+        //Definicion de cuantos elementos se mostraran por pagina
         const itemsPerPage = 4;
 
         const result = await Follow.paginate(
@@ -100,37 +108,42 @@ async function getFollowingUsers(req, res) {
 
 async function getFollowedUsers(req, res){
     try{
-    var userId = req.user.sub;
+    let userId = req.user.sub;
+    let page = 1;
 
     if(req.params.id && req.params.page){
         userId = req.params.id;
-    }
-    var page = 1;
+        page = parseInt(req.params.page);
+    }  
+
+    //Definimos la constante para visualizar el limite de items por cada pagina
+    const itemsPerPage = 4;
     
-    if(req.pararms.page){
-        page = req.params.page;
-    }
-    else{
-        page = req.params.id;
-    }
+    //Definimos la constante de saltar o skip, para determinar segun la posicion de la pagina, cuantos items debe saltar.
+    //En la primera pagina, muestra los 4 primeros, en la segunda, se salta los 4 primeros y accede al 5º, y asi sucesivamente.
+    const skip = (page - 1) * itemsPerPage;
 
-    var itemsPerPage = 4;
-
-    Follow.find({followed:userId}).populate({path: 'followed'}).paginate(page, itemsPerPage, (err, follows, total) => {
+    const follows = await Follow.find({followed:userId}).populate('user').skip(skip).limit(itemsPerPage);
         
-        if(!follows){
+        if(!follows || follows.length === 0){
             return res.status(404).send({message: 'No te sigue ningun usuario'});
         }
+
+        //Total de seguidores
+        const total = await Follow.countDocuments({ followed: userId });
+
         return res.status(200).send({
-            total: total,
+            total,
             pages: Math.ceil(total/itemsPerPage),
             follows
         });
-     })
-    } catch {
+     }
+     catch(err) {
         return res.status(500).send({message: 'Error en el servidor'});
     }
  }
+
+ 
 
 
 module.exports = {
