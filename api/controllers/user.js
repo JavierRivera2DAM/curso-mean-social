@@ -121,7 +121,7 @@ async function getUser(req, res){
     }
     const follow = await Follow.findOne({"user":req.user.sub, "followed":userId});        
     
-        return res.status(200).send({user});     
+        return res.status(200).send({user, follow});     
         
     }
     catch(err){
