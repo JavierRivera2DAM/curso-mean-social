@@ -120,11 +120,12 @@ async function getUser(req, res){
     if(!user){
         return res.status(404).send({message: 'El usuario no existe'});
     }
-    const follow = await Follow.findOne({"user":req.user.sub, "followed":userId});        
+    //const follow = await Follow.findOne({"user":req.user.sub, "followed":userId});
     
-        return res.status(200).send({user, follow});     
-        
-    }
+    followThisUser(req.user.sub, userId).then((value) => {    
+        return res.status(200).send({user, value});        
+    });
+}
     catch(err){
         console.error(err);
         return res.status(500).send({message: 'Error en la peticion'});
