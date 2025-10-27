@@ -151,12 +151,15 @@ async function getUser(req, res){
 //Se crea la Funcion Asincrona 'followThisUser'
 async function followThisUser(identity_user_id, userId){
     try{
-    const following = await Follow.findOne({user: identity_user_id, followed:userId});//.populate('followed');
-    const followed = await Follow.findOne({user: userId, followed: identity_user_id});//.populate('user');
+    const followingStatus = await Follow.findOne({user: identity_user_id, followed:userId});//.populate('followed');
+    const followedStatus = await Follow.findOne({user: userId, followed: identity_user_id});//.populate('user');
+
+    const followingList = await Follow.find({user: userId}).populate('followed');
+    const followersList = await Follow.find({followed: userId}).populate('user');
 
     return{
-    following,
-    followed
+    following: followingList.length > 0 ? followingList: null, //: followStatus.following,
+    followers: followersList.length > 0 ? followersList: null //: followStatus.followed
     };   
     }
     catch (err){
