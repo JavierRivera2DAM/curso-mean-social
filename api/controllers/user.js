@@ -180,9 +180,10 @@ async function followThisUser(identity_user_id, userId){
 //     }))
 //     : null;
 
+    //Se introduce la condicion de revision para que muestre el valor 'null' si la cadena no tiene valores asignados, o sea, su longitud es igual a 0
     return{
-    following: followingList.length > 0 ? followingList: null, //: followStatus.following,
-    followers: followersList.length > 0 ? followersList: null //: followStatus.followed
+    following: followingList.length > 0 ? followingList: null, 
+    followers: followersList.length > 0 ? followersList: null 
     };   
     }
     catch (err){
@@ -209,12 +210,15 @@ async function getUsers(req, res){
         return res.status(404).send({message: ' No hay usuarios disponibles'});        
     }
 
-    //Llamada la Funcion 'followUsersIds' creada al Inicio del Punto 38
+    //Llamada a la Funcion 'followUsersIds' creada al Inicio del Punto 38
     const followData = await followUsersIds(identity_user_id);
         return res.status(200).send({
             users,
-            users_following: followData.following,
-            users_follow_me: followData.followed,
+
+            //Se introduce la condicion de revision para que muestre el valor 'null' si la cadena no tiene valores asignados, o sea, su longitud es igual a 0
+
+            users_following: followData.following.length > 0 ? followData.following : null,
+            users_follow_me: followData.followed.length > 0 ? followData.followed : null,
             total,
             pages: Math.ceil(total/itemsPerPage)
         });        
@@ -241,7 +245,8 @@ async function followUsersIds(userId){
     //Se retornan los Valores Limpios, msotrando unicamente los Ids
     return {
         following: following_clean,
-        followed: followed_clean
+        followed: followed_clean        
+
     };
 }
 catch(err){
