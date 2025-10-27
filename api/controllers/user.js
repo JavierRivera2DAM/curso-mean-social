@@ -125,20 +125,18 @@ async function getUser(req, res){
     if(!user){
         return res.status(404).send({message: 'El usuario no existe'});
     }
-    //const follow = await Follow.findOne({"user":req.user.sub, "followed":userId});
-    
-    
+
     //Invocacion al Metodo 'followThisUser'
-    //const followStatus = await followThisUser(req.user.sub, userId);
-    const following = await Follow.find({user: userId}).populate('followed');
-    const followers = await Follow.find({followed: userId}).populate('user');
+    const followData = await followThisUser(req.user.sub, userId);
+      
+    // const following = await Follow.find({user: userId}).populate('followed');
+    // const followers = await Follow.find({followed: userId}).populate('user');
 
     return res.status(200).send({
         user,
-
         //Agregamos condicion que verifique que si la longitud de las cadenas 'following' o 'followers' son menores que 0, el resultado mostrado es NULL => En el FrontEnd habra que manejarlo
-        following: following.length > 0 ? following: null, //: followStatus.following,
-        followers: followers.length > 0 ? followers: null //: followStatus.followed
+        following: followData.following, //: followStatus.following,
+        followers: followData.followers //: followStatus.followed
     });   
     }
     catch(err){
