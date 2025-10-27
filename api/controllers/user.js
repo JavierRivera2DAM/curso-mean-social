@@ -258,6 +258,11 @@ catch(err){
 }
 }
 
+//Inicio del Punto 39
+//Creacion de Metodo 'getCounters'
+function getCounters(){
+    
+}
 
 //Edicion de datos de usuario
 //Sustitución función síncrona por asíncrona y uso de 'awaits' en vez de 'callbacks'
