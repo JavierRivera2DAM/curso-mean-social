@@ -233,10 +233,15 @@ async function followUsersIds(userId){
     const following = await Follow.find({"user": userId}).select({'_id':0, '__v': 0, 'user': 0});      
 
     const followed = await Follow.find({"followed": userId}).select({'_id':0, '__v': 0, 'followed': 0});
-        
+
+    //Definimos unas constantes que muestren los Seguimientos y los Seguidores de forma 'limpia' sin mostrarlos dentro de otra propiedad, en este caso era 'followed'
+    const following_clean = following.map(f => f.followed);
+    const followed_clean = followed.map(f => f.user);
+    
+    //Se retornan los Valores Limpios, msotrando unicamente los Ids
     return {
-        following,
-        followed
+        following: following_clean,
+        followed: followed_clean
     };
 }
 catch(err){
