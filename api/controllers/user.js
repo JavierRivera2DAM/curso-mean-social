@@ -193,9 +193,11 @@ async function getUsers(req, res){
         return res.status(404).send({message: ' No hay usuarios disponibles'});        
     }
 
-    followThisUser(req.user.sub, userId).then((value) => {
-        return res.status(200).send({user, follow});
-    });
+    return res.status(200).send({
+            users,
+            total,
+            pages: Math.ceil(total/itemsPerPage)
+        });
     
     }
     catch (err) {
