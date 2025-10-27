@@ -128,12 +128,13 @@ async function getUser(req, res){
 
     //Invocacion al Metodo 'followThisUser'
     const followData = await followThisUser(req.user.sub, userId);
+    //user.password = undefined;
       
     // const following = await Follow.find({user: userId}).populate('followed');
     // const followers = await Follow.find({followed: userId}).populate('user');
 
     return res.status(200).send({
-        user,
+        user,        
         //Agregamos condicion que verifique que si la longitud de las cadenas 'following' o 'followers' son menores que 0, el resultado mostrado es NULL => En el FrontEnd habra que manejarlo
         following: followData.following, //: followStatus.following,
         followers: followData.followers //: followStatus.followed
@@ -149,11 +150,35 @@ async function getUser(req, res){
 //Se crea la Funcion Asincrona 'followThisUser'
 async function followThisUser(identity_user_id, userId){
     try{
+    //const rawFollowing = await Follow.find({ user: userId }).populate('followed');
     const followingStatus = await Follow.findOne({user: identity_user_id, followed:userId});//.populate('followed');
+
+    //const rawFollowers = await Follow.find({ followed: userId }).populate('user');
     const followedStatus = await Follow.findOne({user: userId, followed: identity_user_id});//.populate('user');
 
     const followingList = await Follow.find({user: userId}).populate('followed');
+
+     
+// const following = rawFollowing.length > 0
+//     ? rawFollowing.map(f => ({
+//         _id: f._id,
+//         followed: f.followed,
+//         user: f.user,
+//         __v: f.__v
+//     }))
+//     : null;
+
     const followersList = await Follow.find({followed: userId}).populate('user');
+
+
+// const followers = rawFollowers.length > 0
+//     ? rawFollowers.map(f => ({
+//         _id: f._id,
+//         followed: f.followed,
+//         user: f.user,
+//         __v: f.__v
+//     }))
+//     : null;
 
     return{
     following: followingList.length > 0 ? followingList: null, //: followStatus.following,
