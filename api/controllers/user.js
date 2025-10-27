@@ -160,23 +160,18 @@ async function getUser(req, res){
 //Explicacion Metodologia 'Async/Await' del Curso. Punto 37
 //Se crea la Funcion Asincrona 'followThisUser'
 async function followThisUser(identity_user_id, userId){
-    var following = await Follow.findOne({"user": identity_user_id, "followed":userId}).exec((err, follow) => {
-        if(err){
-            return handleError(err);
-        }
-        return follow;
-    }); 
-    
-    var followed = await Follow.findOne({"user": identity_user_id, "followed":userId}).exec((err, follow) => {
-        if(err){
-            return handleError(err);
-        }
-        return follow;
-    });
+    try{
+    const following = await Follow.findOne({"user": identity_user_id, "followed":userId});
+    const followed = await Follow.findOne({"user": userId, "followed":identity_user_id});
 
-    return {
-        following: following,
-        followed: followed
+    return{
+    following,
+    follow
+    };   
+    }
+    catch (err){
+        handleError(err);
+    
     }
 }
 
