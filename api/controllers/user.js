@@ -136,7 +136,7 @@ async function getUser(req, res){
     }
 }
 
-//Explicacion Metodologia 'Async/Await' del Curso
+//Explicacion Metodologia 'Async/Await' del Curso. Punto 37
 //Se crea la Funcion Asincrona 'followThisUser'
 async function followThisUser(identity_user_id, userId){
     var following = await Follow.findOne({"user": identity_user_id, "followed":userId}).exec((err, follow) => {
@@ -177,16 +177,14 @@ async function getUsers(req, res){
         return res.status(404).send({message: ' No hay usuarios disponibles'});        
     }
 
-    return res.status(200).send({
-            users,
-            total,
-            pages: Math.ceil(total/itemsPerPage)
-        });
+    followThisUser(req.user.sub, userId).then((value) => {
+        return res.status(200).send({user, follow});
+    });
     
     }
     catch (err) {
     console.error(err);
-    return res.status(500).send({message: 'error en la peticion'});
+    return res.status(500).send({message: 'El usuario no existe'});
     }
 }
 
@@ -315,3 +313,10 @@ module.exports = {
 //         return res.status(200).send({user: userUpdated});
 //     });
 // }
+
+
+//return res.status(200).send({
+    //         users,
+    //         total,
+    //         pages: Math.ceil(total/itemsPerPage)
+    //     });
