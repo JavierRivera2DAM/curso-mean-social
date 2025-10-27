@@ -222,6 +222,35 @@ async function getUsers(req, res){
     }
 }
 
+//Inicio del Punto 38
+//Creacion de una funcion asincrona llamada 'followUsersIds'
+async function followUsersIds(userId){
+    var following = await Follow.find({"user": userId}).select({'_id':0, '__v': 0, 'user': 0}).exec((err, follows) => {
+        var follows_clean = [];
+
+        follows.forEach((follow) => {
+            follows_clean.push(follow.followed);
+        });
+
+        return follows_clean;
+    });
+
+    var followed = await Follow.find({"followed": userId}).select({'_id':0, '__v': 0, 'followed': 0}).exec((err, follows) => {
+        var follows_clean = [];
+
+        follows.forEach((follow) => {
+            follows_clean.push(follow.user);
+        });
+
+        return follows_clean;
+    });
+    return {
+        following: following,
+        followed: followed
+    }
+}
+
+
 //Edicion de datos de usuario
 //Sustitución función síncrona por asíncrona y uso de 'awaits' en vez de 'callbacks'
 
