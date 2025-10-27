@@ -112,6 +112,30 @@ async function loginUser(req, res) {
 
 //Conseguir datos de un usuario
 //Sustitución función síncrona por asíncrona y uso de 'awaits' en vez de 'callbacks'
+// async function getUser(req, res){
+//     try{
+//     const userId = req.params.id;
+//     const user = await User.findById(userId);
+
+//     if(!user){
+//         return res.status(404).send({message: 'El usuario no existe'});
+//     }
+//     const followStatus = await followThisUser(req.user.sub, userId);
+    
+      
+//         return res.status(200).send({
+//             user,
+//             following: followStatus.following,
+//             followed: followStatus.followed
+//         });        
+    
+// }
+//     catch(err){
+//         console.error(err);
+//         return res.status(500).send({message: 'Error en la peticion'});
+//     }
+// }
+
 async function getUser(req, res){
     try{
     const userId = req.params.id;
@@ -121,14 +145,11 @@ async function getUser(req, res){
         return res.status(404).send({message: 'El usuario no existe'});
     }
     //const follow = await Follow.findOne({"user":req.user.sub, "followed":userId});
+    const follow = await Follow.findOne({"user":req.user.sub, "followed":userId});        
     
-    followThisUser(req.user.sub, userId).then((value) => {    
-        return res.status(200).send({
-            user,
-            following: value.following,
-            followed: value.followed
-        });        
-    });
+        return res.status(200).send({user, follow});
+    
+    
 }
     catch(err){
         console.error(err);
@@ -289,7 +310,7 @@ module.exports = {
     getUsers,
     updateUser,
     uploadImage,
-    getImageFile
+    getImageFile    
 }
 
 // //Edicion de datos de usuario
