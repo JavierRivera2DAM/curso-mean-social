@@ -209,11 +209,18 @@ async function getUsers(req, res){
         return res.status(404).send({message: ' No hay usuarios disponibles'});        
     }
 
-    return res.status(200).send({
+    //Llamada la Funcion 'followUsersIds' creada al Inicio del Punto 38
+    followUsersIds(identity_user_id).then((value) => {
+        return res.status(200).send({
             users,
+            users_following: value.following,
+            users_follow_me: value.followed,
+
             total,
             pages: Math.ceil(total/itemsPerPage)
         });
+
+    });    
     
     }
     catch (err) {
