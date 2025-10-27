@@ -110,47 +110,33 @@ async function loginUser(req, res) {
     }
 }
 
-//Conseguir datos de un usuario
-//Sustitución función síncrona por asíncrona y uso de 'awaits' en vez de 'callbacks'
-// async function getUser(req, res){
-//     try{
-//     const userId = req.params.id;
-//     const user = await User.findById(userId);
 
-//     if(!user){
-//         return res.status(404).send({message: 'El usuario no existe'});
-//     }
-//     const followStatus = await followThisUser(req.user.sub, userId);
-    
-      
-//         return res.status(200).send({
-//             user,
-//             following: followStatus.following,
-//             followed: followStatus.followed
-//         });        
-    
-// }
-//     catch(err){
-//         console.error(err);
-//         return res.status(500).send({message: 'Error en la peticion'});
-//     }
-// }
 
 async function getUser(req, res){
     try{
     const userId = req.params.id;
+    
+    if(!req.user || !req.user.sub){
+        return res.status(401).send({message: 'Sin Autorizacion'});
+    }
+     
     const user = await User.findById(userId);
 
     if(!user){
         return res.status(404).send({message: 'El usuario no existe'});
     }
     //const follow = await Follow.findOne({"user":req.user.sub, "followed":userId});
-    const follow = await Follow.findOne({"user":req.user.sub, "followed":userId});        
-    
-        return res.status(200).send({user, follow});
     
     
-}
+    //Invocacion al Metodo 'followThisUser'
+    const followStatus = await followThisUser(req.user.sub, userId);
+    
+    return res.status(200).send({
+        user,
+        following: followStatus.following?.followed || null,
+        followedBy: followStatus.followed?.user || null
+    });   
+    }
     catch(err){
         console.error(err);
         return res.status(500).send({message: 'Error en la peticion'});
@@ -161,17 +147,17 @@ async function getUser(req, res){
 //Se crea la Funcion Asincrona 'followThisUser'
 async function followThisUser(identity_user_id, userId){
     try{
-    const following = await Follow.findOne({"user": identity_user_id, "followed":userId});
-    const followed = await Follow.findOne({"user": userId, "followed":identity_user_id});
+    const following = await Follow.findOne({user: identity_user_id, followed:userId}).populate('followed');
+    const followed = await Follow.findOne({user: userId, followed: identity_user_id}).populate('user');
 
     return{
     following,
-    follow
+    followed
     };   
     }
     catch (err){
-        handleError(err);
-    
+        console.error('Error en followThisUser');
+        return { following: null, followed: null };    
     }
 }
 
