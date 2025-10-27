@@ -129,12 +129,16 @@ async function getUser(req, res){
     
     
     //Invocacion al Metodo 'followThisUser'
-    const followStatus = await followThisUser(req.user.sub, userId);
-    
+    //const followStatus = await followThisUser(req.user.sub, userId);
+    const following = await Follow.find({user: userId}).populate('followed');
+    const followers = await Follow.find({followed: userId}).populate('user');
+
     return res.status(200).send({
         user,
-        following: followStatus.following?.followed || null,
-        followedBy: followStatus.followed?.user || null
+
+        //Agregamos condicion que verifique que si la longitud de las cadenas 'following' o 'followers' son menores que 0, el resultado mostrado es NULL => En el FrontEnd habra que manejarlo
+        following: following.length > 0 ? following: null, //: followStatus.following,
+        followers: followers.length > 0 ? followers: null //: followStatus.followed
     });   
     }
     catch(err){
@@ -147,8 +151,8 @@ async function getUser(req, res){
 //Se crea la Funcion Asincrona 'followThisUser'
 async function followThisUser(identity_user_id, userId){
     try{
-    const following = await Follow.findOne({user: identity_user_id, followed:userId}).populate('followed');
-    const followed = await Follow.findOne({user: userId, followed: identity_user_id}).populate('user');
+    const following = await Follow.findOne({user: identity_user_id, followed:userId});//.populate('followed');
+    const followed = await Follow.findOne({user: userId, followed: identity_user_id});//.populate('user');
 
     return{
     following,
