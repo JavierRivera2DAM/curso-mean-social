@@ -210,17 +210,14 @@ async function getUsers(req, res){
     }
 
     //Llamada la Funcion 'followUsersIds' creada al Inicio del Punto 38
-    followUsersIds(identity_user_id).then((value) => {
+    const followData = await followUsersIds(identity_user_id);
         return res.status(200).send({
             users,
-            users_following: value.following,
-            users_follow_me: value.followed,
-
+            users_following: followData.following,
+            users_follow_me: followData.followed,
             total,
             pages: Math.ceil(total/itemsPerPage)
-        });
-
-    });    
+        });        
     
     }
     catch (err) {
