@@ -38,12 +38,36 @@ async function savePublication(req, res){
        return res.status(200).send({publication: publicationStored}); 
     }
 
-catch(err){
-    return res.status(500).send({message: 'Error al guardar la publicacion', error: err.message});
+    catch(err){
+        return res.status(500).send({message: 'Error al guardar la publicacion', error: err.message});
+    }
 }
+
+function getPublications(req, res){
+    var page = 1;
+    if(req.params.page){
+        page = req.params.page;
+    }
+
+    var itemsPerPage = 4;
+    
+    Follow.find({user: req.user.sub}).populate('followed').exec((err, follows) => {
+        if(err){
+            return res.status(500).send({message: 'Error al devolver seguimiento'});
+        }
+        var follows_clean = [];
+
+        follows.forEach((follow) => {
+            follows_clean.push(follow.followed);
+        });
+        
+        console.log(follows_clean);
+        
+    });
 }
 
 module.exports = {
     probando,
-    savePublication
+    savePublication,
+    getPublications
 }
