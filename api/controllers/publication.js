@@ -43,27 +43,40 @@ async function savePublication(req, res){
     }
 }
 
-function getPublications(req, res){
-    var page = 1;
-    if(req.params.page){
-        page = req.params.page;
-    }
+async function getPublications(req, res){
+    let page = parseInt(req.params.page) || 1;
+    const itemsPerPage = 4;
+    try{
+        //Obtener los Usuarios Seguidos
+        const follows = await Follow.find({user: req.user.sub}).populate('followed');
 
-    var itemsPerPage = 4;
+        //Extraer los Ids de los Usuarios Seguidos
+        const follows_clean = follows.map(follow => follow.followed._id);
+
+        //Se añade el propio usuario para incluir sus publicaciones
+        follows_clean.push(req.user.sub);
+
+        //Búsqueda de las Publicaciones de los Seguidos y del Propio Usuario
+        const publications = await Publication.find({ user: { $in: follows_clean}})
+        .sort('-created_at')
+        .skip((page - 1)* itemsPerPage)
+        .limit(itemsPerPage)
+        .populate('user');
+        
+        //Se cuenta el total de publicaciones para paginación
+        const total = await Publication.countDocuments({ user: { $in: follows_clean}});
+
+        return res.status(200).send({
+            total,
+            pages: Math.ceil(total/itemsPerPage),
+            page,
+            publications
+        });             
     
-    Follow.find({user: req.user.sub}).populate('followed').exec((err, follows) => {
-        if(err){
-            return res.status(500).send({message: 'Error al devolver seguimiento'});
-        }
-        var follows_clean = [];
-
-        follows.forEach((follow) => {
-            follows_clean.push(follow.followed);
-        });
-        
-        console.log(follows_clean);
-        
-    });
+}
+catch(err){
+    return res.status(500).send({message: 'Error al devolver seguimiento'});
+}
 }
 
 module.exports = {
