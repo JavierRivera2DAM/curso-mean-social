@@ -96,10 +96,25 @@ async function getPublication(req, res){
     }
 }
 
+function deletePublication(req, res){
+    var publicationId = req.params.id;
+
+    Publication.findByIdAndRemove(publicationId, (err, publicationRemoved) => {
+        if(err){
+            return res.status(500).send({message: 'Error al borrar publicaciones'});            
+        }
+        if(!publication){
+            return res.status(404).send({message: 'No existe la publicacion'});
+        }
+        return res.status(200).send({publication: publicationRemoved});
+    });
+}
+
 module.exports = {
     probando,
     savePublication,
     getPublications,
-    getPublication
+    getPublication,
+    deletePublication
 
 }
