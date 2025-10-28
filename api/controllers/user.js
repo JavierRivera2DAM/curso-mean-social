@@ -262,7 +262,14 @@ catch(err){
 //Inicio del Punto 39
 //Creacion de Metodo 'getCounters'
 function getCounters(req, res){
-    
+    var userId= req.user.sub;
+    if(req.params.id){
+        userId = req.params.id;
+    } 
+
+    getCountFollow(userId).then((value) => {
+        return res.status(200).send(value);
+    });
 }
 
 //Funcion Asincrona para contar la cantidad de Usuarios Seguidos y Seguidores
@@ -275,6 +282,11 @@ async function getCountFollow(userId){
         if(err) return handleError(err);
         return count;
     });
+
+    return {
+        following: following,
+        followed: followed
+    }
 }
 
 //Edicion de datos de usuario
@@ -376,6 +388,7 @@ module.exports = {
     loginUser,
     getUser,
     getUsers,
+    getCounters,
     updateUser,
     uploadImage,
     getImageFile    
