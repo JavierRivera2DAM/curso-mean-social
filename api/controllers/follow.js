@@ -148,11 +148,7 @@ async function getFollowedUsers(req, res){
 async function getMyFollows(req, res){
     try{
         const userId = req.user.sub;
-        const isFollowedView = req.params.followed;
-
-        // const query = isFollowedView
-        //     ? { followed: userId }
-        //     : { user: userId };
+        const isFollowedView = req.params.followed;        
 
         //Se aplica la logica de mostrar los usuarios seguidos o los que me siguen. Usando un booleano
         let query = {};
@@ -169,26 +165,8 @@ async function getMyFollows(req, res){
     }
     catch(err){
         return res.status(500).send({message: 'Error en el servidor', error: err})
-    }
-
-    // var userId = req.user.sub;    
-
-    // var find = Follow.find({user: userId});
-
-    // if(req.params.followed){
-    //      find = Follow.find({followed: userId});
-    // }
-
-    // find.populate('user followed').exec((err, follows) => {
-    //     if(err){
-    //         return res.status(500).send({message: 'Error en el servidor'});
-    //     }
-    //     return res.status(200).send({follows});
-    // });
+    }    
 }
-
-
-
 
 module.exports = {
     saveFollow,
