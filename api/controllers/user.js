@@ -8,6 +8,7 @@ var jwt = require('../services/jwt');
 var fs = require('fs');
 var path = require('path');
 const follow = require('../models/follow');
+const { count } = require('console');
 
 
 //Metodos de Prueba
@@ -260,8 +261,20 @@ catch(err){
 
 //Inicio del Punto 39
 //Creacion de Metodo 'getCounters'
-function getCounters(){
+function getCounters(req, res){
     
+}
+
+//Funcion Asincrona para contar la cantidad de Usuarios Seguidos y Seguidores
+async function getCountFollow(userId){
+    var following = await Follow.count({"user": userId}).exec((err, count) => {
+        if(err) return handleError(err);
+        return count;
+    });
+    var followed = await Follow.count({"followed": userId}).exec((err, count) => {
+        if(err) return handleError(err);
+        return count;
+    });
 }
 
 //Edicion de datos de usuario
