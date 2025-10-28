@@ -128,17 +128,14 @@ async function getUser(req, res){
     }
 
     //Invocacion al Metodo 'followThisUser'
-    const followData = await followThisUser(req.user.sub, userId);
-    //user.password = undefined;
+    const followData = await followThisUser(req.user.sub, userId);    
       
-    // const following = await Follow.find({user: userId}).populate('followed');
-    // const followers = await Follow.find({followed: userId}).populate('user');
-
+    
     return res.status(200).send({
         user,        
         //Agregamos condicion que verifique que si la longitud de las cadenas 'following' o 'followers' son menores que 0, el resultado mostrado es NULL => En el FrontEnd habra que manejarlo
-        following: followData.following, //: followStatus.following,
-        followers: followData.followers //: followStatus.followed
+        following: followData.following, 
+        followers: followData.followers 
     });   
     }
     catch(err){
@@ -157,29 +154,11 @@ async function followThisUser(identity_user_id, userId){
     //const rawFollowers = await Follow.find({ followed: userId }).populate('user');
     const followedStatus = await Follow.findOne({user: userId, followed: identity_user_id});//.populate('user');
 
-    const followingList = await Follow.find({user: userId}).populate('followed');
+    const followingList = await Follow.find({user: userId}).populate('followed');     
 
-     
-// const following = rawFollowing.length > 0
-//     ? rawFollowing.map(f => ({
-//         _id: f._id,
-//         followed: f.followed,
-//         user: f.user,
-//         __v: f.__v
-//     }))
-//     : null;
 
     const followersList = await Follow.find({followed: userId}).populate('user');
 
-
-// const followers = rawFollowers.length > 0
-//     ? rawFollowers.map(f => ({
-//         _id: f._id,
-//         followed: f.followed,
-//         user: f.user,
-//         __v: f.__v
-//     }))
-//     : null;
 
     //Se introduce la condicion de revision para que muestre el valor 'null' si la cadena no tiene valores asignados, o sea, su longitud es igual a 0
     return{
@@ -396,32 +375,3 @@ module.exports = {
     uploadImage,
     getImageFile    
 }
-
-// //Edicion de datos de usuario
-// function updateUser(req, res){
-//     var userId = req.params.id;
-//     var update = req.body;
-
-//     //Borrar propiedad password
-//     delete update.password;
-
-//     if(userId != req.user.sub){
-//         return res.status(500).send({message: 'No tienes permiso para actualizar los datos del usuario'});
-//     }
-
-//     User.findByIdAndUpdate(userId, update, {new:true}, (err, userUpdated) => {
-//         if(!userUpdated){ return res.status(500).send({message: 'Error en la peiticion'});
-//         }
-
-//         if(!userUpdated) return res.status(404).send({message: 'No se ha podido actualizar el usuario'});
-
-//         return res.status(200).send({user: userUpdated});
-//     });
-// }
-
-
-//return res.status(200).send({
-    //         users,
-    //         total,
-    //         pages: Math.ceil(total/itemsPerPage)
-    //     });
