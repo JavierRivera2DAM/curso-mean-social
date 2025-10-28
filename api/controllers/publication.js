@@ -8,6 +8,7 @@ var mongoosePaginate = require('mongoose-paginate-v2');
 var Publication = require('../models/publication');
 var User = require('../models/user');
 var Follow = require('../models/follow');
+const publication = require('../models/publication');
 
 function probando (req, res){
     res.status(200).send({
@@ -75,12 +76,30 @@ async function getPublications(req, res){
     
 }
 catch(err){
-    return res.status(500).send({message: 'Error al devolver seguimiento'});
+    return res.status(500).send({message: 'Error al devolver publicacion'});
 }
+}
+
+function getPublication(req, res){
+    var publId = req.params.id;
+
+    Publication.findById(publicationId, (err, publication) => {
+        if(err){
+            return res.status(500).send({message: 'Error al Devolver Publicaciones'});
+        }
+
+        if(!publication){
+            return res.status(404).send({message: 'No existe la publicación'});
+        }
+
+        return res.status(200).send({publication});
+    });
 }
 
 module.exports = {
     probando,
     savePublication,
-    getPublications
+    getPublications,
+    getPublication
+
 }
