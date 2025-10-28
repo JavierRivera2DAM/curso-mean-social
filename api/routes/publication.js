@@ -11,4 +11,8 @@ var md_upload = multipart({ uploadDir: './uploads/publications' });
 api.get('/probando-pub', md_auth.ensureAuth, PublicationController.probando);
 api.post('/publication', md_auth.ensureAuth, PublicationController.savePublication);
 
+//Rutas para 'publications' con ruta de pagina opcional
+api.get('/publications', md_auth.ensureAuth, PublicationController.getPublications);
+api.get('/publications/:page', md_auth.ensureAuth, PublicationController.getPublications);
+
 module.exports = api;
