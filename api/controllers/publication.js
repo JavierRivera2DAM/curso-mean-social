@@ -80,20 +80,20 @@ catch(err){
 }
 }
 
-function getPublication(req, res){
-    var publId = req.params.id;
-
-    Publication.findById(publicationId, (err, publication) => {
-        if(err){
-            return res.status(500).send({message: 'Error al Devolver Publicaciones'});
-        }
-
-        if(!publication){
-            return res.status(404).send({message: 'No existe la publicación'});
-        }
+async function getPublication(req, res){
+    try{   
+    const publicationId = req.params.id;
+    const publication = await Publication.findById(publicationId);
+    
+    if(!publication){
+        return res.status(404).send({message: 'No existe la publicación'});
+    }
 
         return res.status(200).send({publication});
-    });
+    }    
+    catch(err){
+        return res.status(500).send({message: 'Error al Devolver Publicaciones'});
+    }
 }
 
 module.exports = {
