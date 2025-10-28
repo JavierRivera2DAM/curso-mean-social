@@ -261,15 +261,16 @@ catch(err){
 
 //Inicio del Punto 39
 //Creacion de Metodo 'getCounters'
-function getCounters(req, res){
-    var userId= req.user.sub;
-    if(req.params.id){
-        userId = req.params.id;
-    } 
-
-    getCountFollow(userId).then((value) => {
-        return res.status(200).send(value);
-    });
+async function getCounters(req, res){
+    try{
+    const userId= req.params.id || req.user.sub;
+    const value = await getCountFollow(userId);    
+    res.status(200).send(value);
+    
+}
+catch(err){
+    
+}
 }
 
 //Funcion Asincrona para contar la cantidad de Usuarios Seguidos y Seguidores
