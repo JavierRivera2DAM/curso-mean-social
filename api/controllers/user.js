@@ -262,32 +262,34 @@ catch(err){
 //Inicio del Punto 39
 //Creacion de Metodo 'getCounters'
 async function getCounters(req, res){
-    try{
+    //try{
     const userId= req.params.id || req.user.sub;
     const value = await getCountFollow(userId);    
     res.status(200).send(value);
     
-}
-catch(err){
+//}
+//catch(err){
     
-}
+//}
 }
 
 //Funcion Asincrona para contar la cantidad de Usuarios Seguidos y Seguidores
 async function getCountFollow(userId){
-    var following = await Follow.count({"user": userId}).exec((err, count) => {
-        if(err) return handleError(err);
-        return count;
-    });
-    var followed = await Follow.count({"followed": userId}).exec((err, count) => {
-        if(err) return handleError(err);
-        return count;
-    });
+    try{
+    const following = await Follow.countDocuments({"user": userId});    
+    const followed = await Follow.countDocuments({"followed": userId})
+    
+    return{
+        following,
+        followed
+    };
+}
+catch(err){
+    return res.status(500).send
+}
+    
 
-    return {
-        following: following,
-        followed: followed
-    }
+    
 }
 
 //Edicion de datos de usuario
