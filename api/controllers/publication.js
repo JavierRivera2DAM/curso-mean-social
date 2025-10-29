@@ -99,7 +99,7 @@ async function getPublication(req, res){
 async function deletePublication(req, res){
     try{
     const publicationId = req.params.id;
-    const publicationRemoved = await Publication.findByIdAndRemove(publicationId);        
+    const publicationRemoved = await Publication.findByIdAndDelete(publicationId);        
     
     if(!publicationRemoved){
             return res.status(404).send({message: 'No existe la publicacion'});
@@ -107,9 +107,9 @@ async function deletePublication(req, res){
         return res.status(200).send({publication: publicationRemoved});
     }
 
-catch(err){
-    return res.status(500).send({message: 'Error al borrar publicaciones'}); 
-}
+    catch(err){
+    return res.status(500).send({message: 'Error al borrar publicaciones', error: err.message}); 
+    }
 }
 
 
