@@ -104,7 +104,7 @@ async function deletePublication(req, res){
     if(!publicationRemoved){
             return res.status(404).send({message: 'No existe la publicacion'});
         }
-        return res.status(200).send({publication: publicationRemoved});
+        return res.status(200).send({publication: publicationRemoved, message: 'Publicación ELIMINADA CORRECTAMENTE. Verifique la Base de Datos'});
     }
 
     catch(err){
