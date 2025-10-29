@@ -77,13 +77,44 @@ async function getReceivedMessages(req, res){
     catch(err){
         return res.status(500).send({message: 'Error en la peticion', error: err.message});
     }
+}
+
+//Creacion de Método que devuelva los Mensajes Enviados por un Usuario
+
+async function getEmmitMessages(req, res){
+    let page = parseInt(req.params.page) || 1;
+    const itemsPerPage = 4;
+    var userId = req.user.sub;    
+    
+    if(req.params.page){
+       page = req.params.page;
+    }
+    
+    try{
+    var messages = await Message.find({emitter: userId}).populate('emitter receiver', 'name surname image nick  _id') //.paginate(page, itemsPerPage, (err, messages, total) => {
+    
+    var total = await Message.countDocuments({ receiver: userId});
+        
+        if(!messages || messages.length === 0){
+            return res.status(404).send({message: 'No hay mensajes'});
+        }
+        return res.status(200).send({
+            total,
+            pages: Math.ceil(total/itemsPerPage),
+            messages
+        });
+    }    
+    catch(err){
+        return res.status(500).send({message: 'Error en la peticion', error: err.message});
+    }
 
 }
 
 module.exports = {
     probando,
     saveMessage,
-    getReceivedMessages
+    getReceivedMessages,
+    getEmmitMessages
 }
 
 // function saveMessage(req, res){
