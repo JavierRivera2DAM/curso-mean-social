@@ -60,9 +60,11 @@ async function getReceivedMessages(req, res){
     }
     
     try{
-    const messages = await Message.find({receiver: userId}).populate('emitter') //.paginate(page, itemsPerPage, (err, messages, total) => {
+    var messages = await Message.find({receiver: userId}).populate('emitter') //.paginate(page, itemsPerPage, (err, messages, total) => {
+    
+        var total = await Message.countDocuments({ receiver: userId});
         
-        if(!messages){
+        if(!messages || messages.length === 0){
             return res.status(404).send({message: 'No hay mensajes'});
         }
         return res.status(200).send({
