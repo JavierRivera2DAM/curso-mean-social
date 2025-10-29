@@ -8,7 +8,7 @@ var Follow = require('../models/follow');
 var Message = require('../models/message');
 
 function probando(req, res){
-    res.status(200).send({message: 'Hola qué tal'});
+    res.status(200).send({message: 'Hola qué tal desde los Mensajes Privados'});
 }
 
 module.exports = {
