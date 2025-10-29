@@ -3,12 +3,14 @@ var bcrypt = require('bcrypt') ;
 
 var User = require('../models/user');
 var Follow = require('../models/follow');
+var Publication = require('../models/publication');
 var jwt = require('../services/jwt');
 
 var fs = require('fs');
 var path = require('path');
 const follow = require('../models/follow');
 const { count } = require('console');
+
 
 
 //Metodos de Prueba
@@ -241,30 +243,32 @@ catch(err){
 //Inicio del Punto 39
 //Creacion de Metodo 'getCounters'
 async function getCounters(req, res){
-    //try{
+    try{
     const userId= req.params.id || req.user.sub;
     const value = await getCountFollow(userId);    
     res.status(200).send(value);
     
-//}
-//catch(err){
-    
-//}
+    }
+    catch(err){
+        return res.status(500).send(err.message);    
+    }
 }
 
 //Funcion Asincrona para contar la cantidad de Usuarios Seguidos y Seguidores
 async function getCountFollow(userId){
     try{
     const following = await Follow.countDocuments({"user": userId});    
-    const followed = await Follow.countDocuments({"followed": userId})
+    const followed = await Follow.countDocuments({"followed": userId});
+    const publications = await Publication.countDocuments({"user": userId});
     
     return{
         following,
-        followed
+        followed,
+        publications
     };
 }
 catch(err){
-    return res.status(500).send
+    return res.status(500).send(err.message);
 }
     
 
