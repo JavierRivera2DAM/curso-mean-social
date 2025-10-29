@@ -266,10 +266,10 @@ async function getCountFollow(userId){
         followed,
         publications
     };
-}
-catch(err){
+    }
+    catch(err){
     return res.status(500).send(err.message);
-}
+    }
     
 
     
