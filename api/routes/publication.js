@@ -19,4 +19,8 @@ api.get('/publication/:id', md_auth.ensureAuth, PublicationController.getPublica
 
 api.delete('/publication/:id', md_auth.ensureAuth, PublicationController.deletePublication);
 
+//Rutas para la Subida y Muestra de Fichero de Imagen en Publicación
+api.post('/upload-image-pub/:id', md_auth.ensureAuth, md_upload, PublicationController.uploadImage);
+api.get('/get-image-pub/:imageFile', md_auth.ensureAuth, PublicationController.getImageFile);
+
 module.exports = api;
