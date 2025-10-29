@@ -38,7 +38,7 @@ async function savePublication(req, res){
        if(!publicationStored){
         return res.status(404).send({message: 'La publicacion NO ha sido guardada'});
        }
-       return res.status(200).send({publication: publicationStored}); 
+       return res.status(200).send({publication: publicationStored, message: 'Publicación Subida CORRECTAMENTE'}); 
     }
 
     catch(err){
@@ -122,9 +122,9 @@ async function uploadImage(req, res){
     
     var publicationId = req.params.id;    
 
-    // if(publicationId != req.user.sub){
-    //     return res.status(403).send({ message: 'No tienes permiso para actualizar los datos de la publicación', error: err.message });
-    // }
+     if(publicationId != req.user.sub){
+         return res.status(403).send({ message: 'No tienes permiso para actualizar los datos de la publicación'});
+     }
         if(!req.files || !req.files.image){
             return res.status(400).send({ message: 'No se han subido imagenes', error: err.message});
         }
