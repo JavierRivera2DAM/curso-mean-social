@@ -27,9 +27,10 @@ async function saveMessage(req, res){
     }
     try{
     const message = new Message();
+    message.text = params.text;
     message.emitter = req.user.sub;
     message.receiver = params.receiver;
-    message.text = params.text;
+    
     message.created_at = moment().unix();
     
     const messageStored = await message.save();
@@ -60,9 +61,9 @@ async function getReceivedMessages(req, res){
     }
     
     try{
-    var messages = await Message.find({receiver: userId}).populate('emitter') //.paginate(page, itemsPerPage, (err, messages, total) => {
+    var messages = await Message.find({receiver: userId}).populate('emitter', 'name surname image nick  _id') //.paginate(page, itemsPerPage, (err, messages, total) => {
     
-        var total = await Message.countDocuments({ receiver: userId});
+    var total = await Message.countDocuments({ receiver: userId});
         
         if(!messages || messages.length === 0){
             return res.status(404).send({message: 'No hay mensajes'});
