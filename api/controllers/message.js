@@ -47,18 +47,21 @@ async function saveMessage(req, res){
     }
 }
 
-function getReceivedMessages(req, res){
-    var userId = req.user.sub;
-    var page = 1;
+//Creacion del Metodo de Devolucion de los Mensajes Recibidos por un Usuario
+//Conversion a Funcion Asincrona y uso de 'await' para evitar deprecado de Mongoose
+
+async function getReceivedMessages(req, res){
+    let page = parseInt(req.params.page) || 1;
+    const itemsPerPage = 4;
+    var userId = req.user.sub;    
+    
     if(req.params.page){
        page = req.params.page;
     }
-    var itemsPerPage = 4;
-
-    Message.find({receiver: userId}).populate('emitter').paginate(page, itemsPerPage, (err, messages, total) => {
-        if(err){
-        return res.status(500).send({message: 'Error en la peticion', error: err.message});
-        }
+    
+    try{
+    const messages = await Message.find({receiver: userId}).populate('emitter') //.paginate(page, itemsPerPage, (err, messages, total) => {
+        
         if(!messages){
             return res.status(404).send({message: 'No hay mensajes'});
         }
@@ -67,7 +70,10 @@ function getReceivedMessages(req, res){
             pages: Math.ceil(total/itemsPerPage),
             messages
         });
-    });
+    }    
+    catch(err){
+        return res.status(500).send({message: 'Error en la peticion', error: err.message});
+    }
 
 }
 
@@ -99,4 +105,28 @@ module.exports = {
 
 //         return res.status(200).send({message: messageStored});
 //     });
+// }
+
+// function getReceivedMessages(req, res){
+//     var userId = req.user.sub;
+//     var page = 1;
+//     if(req.params.page){
+//        page = req.params.page;
+//     }
+//     var itemsPerPage = 4;
+
+//     Message.find({receiver: userId}).populate('emitter').paginate(page, itemsPerPage, (err, messages, total) => {
+//         if(err){
+//         return res.status(500).send({message: 'Error en la peticion', error: err.message});
+//         }
+//         if(!messages){
+//             return res.status(404).send({message: 'No hay mensajes'});
+//         }
+//         return res.status(200).send({
+//             total,
+//             pages: Math.ceil(total/itemsPerPage),
+//             messages
+//         });
+//     });
+
 // }
