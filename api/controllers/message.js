@@ -14,32 +14,64 @@ function probando(req, res){
 }
 
 //Creacion del Metodo de Guardado de Mensajes 'saveMessage'
+//Modificación de la función por Asíncrona para enviar el deprecado de callbacks de Mongoose actualizado
 
-function saveMessage(req, res){
-    var params = req.body;
+async function saveMessage(req, res){    
+    const params = req.body;
+    if(!req.body){
+    return res.status(400).send({message: 'No se recibió cuerpo en la solicitud'});
+    }
 
     if(!params.text || !params.receiver){
-        return res.status(200).send({message: 'Envia los datos necesarios'});
+        return res.status(400).send({message: 'Envia los datos necesarios'});
     }
-    var message = new Message();
+    try{
+    const message = new Message();
     message.emitter = req.user.sub;
-    message.receiver = req.receiver;
+    message.receiver = params.receiver;
     message.text = params.text;
     message.created_at = moment().unix();
-
-    message.save((err, messageStored) => {
-        if(err){
-        return res.status(500).send({message: 'Error en la peticion'});
-        }
-        if(!messageStored){
+    
+    const messageStored = await message.save();
+        
+    if(!messageStored){
         return res.status(500).send({message: 'Error al enviar el mensaje'});    
-        }
+    }
 
-        return res.status(200).send({message: messageStored});
-    });
+    return res.status(200).send({message: messageStored});
+    
+    }
+    
+    catch(err){
+        return res.status(500).send({message: 'Error en la peticion', error: err.message});
+    }
 }
 
 module.exports = {
     probando,
     saveMessage
 }
+
+// function saveMessage(req, res){
+//     var params = req.body;
+
+//     if(!params.text || !params.receiver){
+//         return res.status(200).send({message: 'Envia los datos necesarios'});
+//     }
+//     var message = new Message();
+//     message.emitter = req.user.sub;
+//     message.receiver = req.receiver;
+//     message.text = params.text;
+//     message.created_at = moment().unix();
+
+//     message.save((err, messageStored) => {
+//         if(err){
+//         return res.status(500).send({message: 'Error en la peticion'});
+//         }
+//         if(!messageStored){
+//         return res.status(500).send({message: 'Error al enviar el mensaje'});    
+//         }
+
+//         return res.status(200).send({message: messageStored});
+//     });
+// }

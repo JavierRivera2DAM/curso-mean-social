@@ -1,9 +1,10 @@
 'use strict'
 
 var express = require('express');
-var bodyParser = require('body-parser');
+//var bodyParser = require('body-parser');
 
 var app = express();
+app.use(express.json());
 
 //Cargar Rutas
 var user_routes = require('./routes/user');
@@ -12,9 +13,10 @@ var publication_routes = require('./routes/publication');
 var message_routes = require('./routes/message');
 
 //Middlewares
-app.use(bodyParser.urlencoded({extended:false}));
-app.use(bodyParser.json());
+
+//app.use(bodyParser.json());
 app.use(express.json());
+app.use(express.urlencoded({extended:false}));
 
 //Cors
 
