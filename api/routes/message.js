@@ -8,6 +8,8 @@ var md_auth = require('../middlewares/authenticated');
 api.get('/probando-md', md_auth.ensureAuth, MessageController.probando);
 api.post('/message', md_auth.ensureAuth, MessageController.saveMessage);
 api.get('/my-messages', md_auth.ensureAuth, MessageController.getReceivedMessages);
+api.get('/my-messages/:page', md_auth.ensureAuth, MessageController.getReceivedMessages);
+
 
 
 module.exports = api;
