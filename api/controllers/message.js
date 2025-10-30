@@ -138,17 +138,14 @@ async function setViewedMessages(req, res){
     var userId = req.user.sub;
     try{
 
-    const messagesUpdated = await Message.update({receiver:userId, viewed: 'false'}, {viewed: 'true'}, {"multi": true}) 
-    if(!messagesUpdated){
-        return res.status(200).send({
-            messages: messagesUpdated
-        });
+    const messagesUpdated = await Message.updateOne({receiver:userId, viewed: 'false'}, {viewed: 'true'}, {multi: 'true'}); 
+    return res.status(200).send({
+        messages: messagesUpdated
+    });        
     }
+    catch(err){
+        return res.status(500).send({message: 'Error en la Peticion', error: err.message});
     }
-
-catch(err){
-    return res.status(500).send({message: 'Error en la Peticion', error: err.message});
-}
 }
 
 module.exports = {
