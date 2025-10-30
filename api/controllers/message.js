@@ -32,6 +32,8 @@ async function saveMessage(req, res){
     message.receiver = params.receiver;
     
     message.created_at = moment().unix();
+
+    message.viewed = 'false';
     
     const messageStored = await message.save();
         
@@ -109,6 +111,8 @@ async function getEmmitMessages(req, res){
     }
 
 }
+
+
 
 module.exports = {
     probando,
