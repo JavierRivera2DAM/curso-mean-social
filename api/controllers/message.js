@@ -93,7 +93,7 @@ async function getEmmitMessages(req, res){
     try{
     var messages = await Message.find({emitter: userId}).populate('emitter receiver', 'name surname image nick  _id') //.paginate(page, itemsPerPage, (err, messages, total) => {
     
-    var total = await Message.countDocuments({ receiver: userId});
+    var total = await Message.countDocuments({ emitter: userId});
         
         if(!messages || messages.length === 0){
             return res.status(404).send({message: 'No hay mensajes'});
