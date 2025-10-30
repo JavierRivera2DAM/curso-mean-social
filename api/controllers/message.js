@@ -130,7 +130,7 @@ async function getUnviewedMessages(req, res){
     }
 }
 
-function setviewedMessages(req, res){
+function setViewedMessages(req, res){
     var userId = req.user.sub;
 
     Message.update({receiver:userId, viewed: 'false'}, {viewed: 'true'}, {"multi": true}, (err, messagesUpdated) => {
@@ -152,7 +152,7 @@ module.exports = {
     getReceivedMessages,
     getEmmitMessages,
     getUnviewedMessages,
-    setviewedMessages
+    setViewedMessages
 }
 
 // function saveMessage(req, res){
