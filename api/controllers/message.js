@@ -114,17 +114,19 @@ async function getEmmitMessages(req, res){
 
 //Creación de Método que cuenta los Mensajes No Vistos
 
-function getUnviewedMessages(req, res){
+async function getUnviewedMessages(req, res){
     var userId = req.user.sub;
-
-    Message.countDocuments({receiver:userId, viewed: 'false'}). exec((err, countDocuments) => {
-        if(err){
-            return res.status(500).send({message: 'Error en la Peticion'});
-        }
+try{
+    unviewedMessage = await Message.countDocuments({receiver:userId, viewed: 'false'});
+        
         return res.status(200).send({
             'unviewed': countDocuments
         });
-    });
+    }
+
+catch(err){
+    return res.status(500).send({message: 'Error en la Peticion'});
+}
 }
 
 module.exports = {
