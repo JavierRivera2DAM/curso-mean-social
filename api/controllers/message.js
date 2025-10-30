@@ -116,18 +116,34 @@ async function getEmmitMessages(req, res){
 
 async function getUnviewedMessages(req, res){
     var userId = req.user.sub;
-try{
-    const unviewedMessage = await Message.countDocuments({receiver:userId, viewed: 'false'});
+    try{
+        const unviewedMessage = await Message.countDocuments({receiver:userId, viewed: 'false'});
         
-        return res.status(200).send({
-            //'unviewed': count
-            'unviewed': unviewedMessage
-        });
+            return res.status(200).send({
+                //'unviewed': count
+                'unviewed': unviewedMessage
+            });
     }
 
-catch(err){
-    return res.status(500).send({message: 'Error en la Peticion', error: err.message});
+    catch(err){
+        return res.status(500).send({message: 'Error en la Peticion', error: err.message});
+    }
 }
+
+function setviewedMessages(req, res){
+    var userId = req.user.sub;
+
+    Message.update({receiver:userId, viewed: 'false'}, {viewed: 'true'}, {"multi": true}, (err, messagesUpdated) => {
+        if(err){
+        return res.status(500).send({message: 'Error en la Peticion', error: err.message});
+        }
+
+        if(!messagesUpdated){
+            return res.status(200).send({
+                messages: messagesUpdated
+            });
+        }
+    });
 }
 
 module.exports = {
@@ -135,7 +151,8 @@ module.exports = {
     saveMessage,
     getReceivedMessages,
     getEmmitMessages,
-    getUnviewedMessages
+    getUnviewedMessages,
+    setviewedMessages
 }
 
 // function saveMessage(req, res){
