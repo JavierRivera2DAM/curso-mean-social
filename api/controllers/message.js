@@ -113,6 +113,7 @@ async function getEmmitMessages(req, res){
 }
 
 //Creación de Método que cuenta los Mensajes No Vistos
+//Modificado a Asíncrono para evitar Deprecado de Callbacks
 
 async function getUnviewedMessages(req, res){
     var userId = req.user.sub;
@@ -130,20 +131,24 @@ async function getUnviewedMessages(req, res){
     }
 }
 
-function setViewedMessages(req, res){
+//Creado Método que se encarga de ajustar o asignar valor de 'leído' o 'no leído'
+//Modificado a Asíncrono para evitar Deprecado de Callbacks
+
+async function setViewedMessages(req, res){
     var userId = req.user.sub;
+    try{
 
-    Message.update({receiver:userId, viewed: 'false'}, {viewed: 'true'}, {"multi": true}, (err, messagesUpdated) => {
-        if(err){
-        return res.status(500).send({message: 'Error en la Peticion', error: err.message});
-        }
+    const messagesUpdated = await Message.update({receiver:userId, viewed: 'false'}, {viewed: 'true'}, {"multi": true}) 
+    if(!messagesUpdated){
+        return res.status(200).send({
+            messages: messagesUpdated
+        });
+    }
+    }
 
-        if(!messagesUpdated){
-            return res.status(200).send({
-                messages: messagesUpdated
-            });
-        }
-    });
+catch(err){
+    return res.status(500).send({message: 'Error en la Peticion', error: err.message});
+}
 }
 
 module.exports = {
