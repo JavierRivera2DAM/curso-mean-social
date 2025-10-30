@@ -117,15 +117,16 @@ async function getEmmitMessages(req, res){
 async function getUnviewedMessages(req, res){
     var userId = req.user.sub;
 try{
-    unviewedMessage = await Message.countDocuments({receiver:userId, viewed: 'false'});
+    const unviewedMessage = await Message.countDocuments({receiver:userId, viewed: 'false'});
         
         return res.status(200).send({
-            'unviewed': countDocuments
+            //'unviewed': count
+            'unviewed': unviewedMessage
         });
     }
 
 catch(err){
-    return res.status(500).send({message: 'Error en la Peticion'});
+    return res.status(500).send({message: 'Error en la Peticion', error: err.message});
 }
 }
 
