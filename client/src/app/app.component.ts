@@ -1,10 +1,12 @@
 import { Component, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 
 //Agregado 'standalone: false' al Componente para evitar errores al usar NgModules
-@Component({
-  standalone: false,  
-  selector: 'app-root',  
+@Component({    
+  selector: 'app-root', 
+  imports: [CommonModule, RouterModule], 
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })

@@ -1,7 +1,6 @@
 import  {Component, OnInit} from '@angular/core';
 
-@Component({
-    standalone: false,    
+@Component({       
     selector: 'register',
     templateUrl: './register.component.html'
 })
