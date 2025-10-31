@@ -3,3 +3,15 @@
     padding: 0px !important;
     border-radius: 0px !important;
 }
+
+/*Para definir el color de relleno de navbar y sus bordes. Se define usando Important para que sobrescriba el resto de estilos presentes dentro de Bootstrap*/
+.navigation .navbar{
+    border-radius: 0% !important;
+    background: #e53c37 !important;
+    border: none;
+}
+
+/*Para definir el color de los ítems dentro del navbar y sus bordes*/
+.navigation .navbar *{
+    color: white !important;
+}
