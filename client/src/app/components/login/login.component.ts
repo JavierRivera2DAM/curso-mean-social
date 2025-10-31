@@ -1,6 +1,7 @@
 import  {Component, OnInit} from '@angular/core';
 
 @Component({
+    standalone: false,    
     selector: 'login',
     templateUrl: './login.component.html'
 })
