@@ -1,13 +1,13 @@
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import { NgModule } from "@angular/core";
+//import { NgModule } from "@angular/core";
 
 //Componentes
 import { AppComponent } from "./app.component";
 import { LoginComponent } from "./components/login/login.component";
 import { RegisterComponent } from "./components/register/register.component";
 import { BrowserModule } from '@angular/platform-browser';
-//import { NgModule } from '@angular/core';
-//import { routing, appRoutingProviders } from './app.routing';
+import { NgModule } from '@angular/core';
+import { routing, appRoutingProviders } from './app.routing';
 
 @NgModule({
     declarations: [    
@@ -18,9 +18,9 @@ import { BrowserModule } from '@angular/platform-browser';
         AppComponent,
         LoginComponent,
         RegisterComponent,
-        //routing         
+        routing         
     ], providers: [
-        //appRoutingProviders
+        appRoutingProviders
     ],
     bootstrap: [AppComponent]
 })
