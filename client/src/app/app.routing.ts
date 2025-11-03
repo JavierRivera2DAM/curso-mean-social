@@ -14,5 +14,5 @@ const appRoutes: Routes = [
 ];
 
 //Exportacion de la Configuracion
-export const appRoutingProviders: any[] = [];
-export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes);
+// export const appRoutingProviders: any[] = [];
+// export const routing: ModuleWithProviders = RouterModule.forRoot(appRoutes);
