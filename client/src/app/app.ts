@@ -8,5 +8,6 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('client');
+  // protected readonly title = signal('client');
+  public title = 'NGSocial Javier Rivera';
 }
