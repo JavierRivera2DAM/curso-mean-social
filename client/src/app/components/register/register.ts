@@ -1,7 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 
 @Component({
-    selector: 'register',
+    selector: 'app-register',
+    standalone: true,
     templateUrl: './register.html'
 })
 
@@ -9,7 +10,7 @@ export class RegisterComponent implements OnInit{
     public title:string;
 
         constructor(){
-            this.title = 'Identificate';
+            this.title = 'Regístrate';
         }
 
 
