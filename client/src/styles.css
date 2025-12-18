@@ -1,1 +1,13 @@
-/* You can add global styles to this file, and also import other style files */
+.navbar {
+    background-color: #bd2020 !important; /* Rojo */
+}
+
+.navbar .nav-link {
+    color: #fff !important; font-weight: 500;
+}
+
+.navbar .nav-link:hover {
+    background-color: #a51818 !important;
+    color: #f1f1f1 !important;
+    border-radius: 4px;
+}
