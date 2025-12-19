@@ -28,7 +28,7 @@
 
     <p>
     <label>Correo</label>
-    <input type="text" name="email" #email="ngModel" [(ngModel)]="user.email" class="form-control" required/>
+    <input type="text" name="email" #email="ngModel" [(ngModel)]="user.email" class="form-control" required pattern="[a-z0-9.%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" />
     <span *ngIf="!email.valid && email.touched">
         El correo es obligatorio!!
     </span>
